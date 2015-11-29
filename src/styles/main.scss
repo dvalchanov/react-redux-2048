@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Local
+ * Import and set as `className`
+ * For more info: https://github.com/css-modules/css-modules
+ */
+.wrapper {}
+
+/*
+ * Global (Standard usage)
+ */
+:global {
+  .wrapper {}
+}
+

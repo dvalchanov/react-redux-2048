@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>{%=o.htmlWebpackPlugin.options.title %}</title>
+    {% if (o.htmlWebpackPlugin.files.favicon) { %}
+      <link rel="shortcut icon" href="{%= o.htmlWebpackPlugin.files.favicon %}">
+    {% } %}
+    {% for (var css in o.htmlWebpackPlugin.files.css) { %}
+      <link href="{%= o.htmlWebpackPlugin.files.css[css] %}" rel="stylesheet">
+    {% } %}
+  </head>
+  <body>
+    <div id="application"></div>
+    {% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
+      <script src="{%= o.htmlWebpackPlugin.files.chunks[chunk].entry %}"></script>
+    {% } %}
+  </body>
+</html>
