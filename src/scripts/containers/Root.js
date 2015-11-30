@@ -1,7 +1,7 @@
-import React, {Component} from "react";
+import {Component} from "react";
 import {createHistory} from "history";
 import {applyMiddleware, compose} from "redux";
-import {Redirect, Router, Route} from "react-router";
+import {Router, Route} from "react-router";
 import {Provider} from "react-redux";
 import thunk from "redux-thunk";
 

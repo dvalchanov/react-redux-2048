@@ -175,7 +175,7 @@
     "no-undef-init": 1,
     "no-undef": 0,
     "no-undefined": 2,
-    "no-unused-vars": 0,
+    "no-unused-vars": 1,
     "no-use-before-define": 2,
 
     "no-const-assign": 2,
@@ -185,6 +185,7 @@
     "default-case": 2,
     "dot-notation": 2,
     "dot-location": 0,
+
     "react/display-name": [0]
   }
 }

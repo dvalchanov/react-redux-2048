@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import {Component} from "react";
 import {connect} from "react-redux";
 
 /**
@@ -32,7 +32,9 @@ import styles from "../../styles/main.scss";
  *     const {user} = this.props;
  */
 @connect(state => {
-  return {};
+  return {
+    state: state
+  };
 })
 export default class App extends Component {
   render() {

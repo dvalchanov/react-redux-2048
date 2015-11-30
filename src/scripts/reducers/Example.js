@@ -1,5 +1,4 @@
 import {Map} from "immutable";
-import actionTypes from "../actions/actionTypes";
 
 const initialState = Map({});
 
@@ -7,7 +6,9 @@ const initialState = Map({});
  * Example reducer.
  * NOTE: Change this to something that fits your app.
  *
- * - Example:
+ * - Example (use with actionTypes):
+ *
+ *   import actionTypes from "../actions/actionTypes";
  *
  *   case actionTypes.LOGIN:
  *     // Change state

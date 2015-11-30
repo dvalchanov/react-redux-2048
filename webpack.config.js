@@ -22,6 +22,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "React + Redux Starter",
       template: "src/index.html"
+    }),
+    new webpack.ProvidePlugin({
+      React: "react"
     })
   ],
 

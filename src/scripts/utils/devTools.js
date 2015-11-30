@@ -1,4 +1,3 @@
-import React from "react";
 import {createStore as initialCreateStore, compose} from "redux";
 import {devTools, persistState} from "redux-devtools";
 import {DevTools, DebugPanel, LogMonitor} from "redux-devtools/lib/react";
