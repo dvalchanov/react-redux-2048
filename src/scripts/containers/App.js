@@ -1,26 +1,47 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
+
+/**
+ * Use for local styles.
+ */
 import styles from "../../styles/main.scss";
 
+/**
+ * How to:
+ *
+ * - Include images:
+ *   <img src={require("../../images/name.svg")} />
+ *   <img src={require("../../images/name.png")} />
+ */
+
+/**
+ * ES7 Decorator
+ *
+ * Return your specific states/values to use in the component.
+ *
+ * - Example:
+ *
+ *   In decorator:
+ *
+ *     return {
+ *       user: state.user
+ *     }
+ *
+ *   In component:
+ *
+ *     const {user} = this.props;
+ */
 @connect(state => {
-  return {
-    user: state.user
-  }
+  return {};
 })
 export default class App extends Component {
-  static propTypes = {
-    user: PropTypes.object.isRequired
-  }
-
   render() {
-    const {user} = this.props;
     const children = this.props.children;
 
-    return(
+    return (
       <main className={styles.wrapper}>
         {children}
       </main>
     );
   }
 }
-

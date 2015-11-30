@@ -1,0 +1,11 @@
+{
+  "title": "React + Redux Starter",
+  "host": "localhost",
+  "port": 3000,
+  "publicPath": "/",
+  "hot": true,
+  "inline": true,
+  "watch": true,
+  "sourceMap": true,
+  "historyApiFallback": true
+}

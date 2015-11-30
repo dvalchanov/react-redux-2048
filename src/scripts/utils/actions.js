@@ -1,10 +1,24 @@
 import keyMirror from "keymirror";
 
+/**
+ * Generate action types in the form of:
+ *
+ *   {ACTION: "ACTION"}
+ *
+ * Add your own pre/post action types in the loop if needed.
+ *
+ * - Example:
+ *
+ *     actionMap[`BEFORE_${actions[i]}`] = null;
+ *     actionMap[`AFTER_${actions[i]}`] = null;
+ */
 export function generateActions(actions) {
   const actionMap = {};
 
   for (const i in actions) {
-    actionMap[actions[i]] = null;
+    if ({}.hasOwnProperty.call(actions, i)) {
+      actionMap[actions[i]] = null;
+    }
   }
 
   return keyMirror(actionMap);

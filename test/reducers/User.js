@@ -5,7 +5,7 @@ import reducer from "../../src/scripts/reducers/User";
 describe("Account reducer", () => {
   const defaultState = {
     isAuthenticated: false,
-    user: null
+    data: null
   };
 
   it("should have default state", () => {

@@ -1,0 +1,3 @@
+/**
+ * Define your constants here.
+ */

@@ -5,6 +5,10 @@ import {DevTools, DebugPanel, LogMonitor} from "redux-devtools/lib/react";
 
 export let createStore = initialCreateStore;
 
+/**
+ * Apply devTools enhancer if in development mode, otherwise just use
+ * the original `createStore` function.
+ */
 if (__DEV__) {
   createStore = compose(
     devTools(),
@@ -12,6 +16,9 @@ if (__DEV__) {
   )(createStore);
 }
 
+/**
+ * Render the Debug panel if in development mode.
+ */
 export function renderDevTools(store) {
   if (__DEV__) {
     return (

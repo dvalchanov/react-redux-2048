@@ -1,10 +1,13 @@
 import actionTypes from "./actionTypes";
 
-export function login(user) {
-  return dispatch => {
-    dispatch({
-      isAuthenticated: true,
-      user
-    });
-  });
-}
+/**
+ * Define all of your actions here.
+ *
+ * - Example:
+ *
+ *   export function name(params) {
+ *     return dispatch => {
+ *       dispatch({});
+ *     });
+ *   }
+ */

@@ -2,6 +2,8 @@ var path = require("path");
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 
+var settings = require("./.settings.json");
+
 module.exports = {
   context: __dirname,
 
@@ -24,6 +26,13 @@ module.exports = {
   ],
 
   module: {
+    preLoaders: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "eslint"
+      }
+    ],
     loaders: [
       {
         test: /\.js?$/,

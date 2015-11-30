@@ -17,7 +17,7 @@ const history = createHistory();
 
 export default class Root extends Component {
   render() {
-    return(
+    return (
       <div>
         <Provider store={store}>
           <Router history={history}>
