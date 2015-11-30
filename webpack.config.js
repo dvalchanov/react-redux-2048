@@ -2,7 +2,7 @@ var path = require("path");
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 
-var settings = require("./.settings.json");
+var settings = require("./settings.json");
 
 module.exports = {
   context: __dirname,

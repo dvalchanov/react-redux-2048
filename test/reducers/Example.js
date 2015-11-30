@@ -1,12 +1,9 @@
 import {expect} from "chai";
 import {Map} from "immutable";
-import reducer from "../../src/scripts/reducers/User";
+import reducer from "../../src/scripts/reducers/Example";
 
 describe("Account reducer", () => {
-  const defaultState = {
-    isAuthenticated: false,
-    data: null
-  };
+  const defaultState = {};
 
   it("should have default state", () => {
     const expected = defaultState;

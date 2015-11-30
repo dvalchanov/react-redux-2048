@@ -12,6 +12,31 @@
     "node": true
   },
   "rules": {
+    "strict": [2, "never"],
+
+    "comma-dangle": [2, "never"],
+    "no-cond-assign": [2, "always"],
+    "no-dupe-args": 2,
+    "no-empty-character-class": 2,
+    "no-empty": 2,
+    "no-ex-assign": 2,
+    "no-extra-boolean-cast": 0,
+    "no-extra-parens": [2, "functions"],
+    "no-extra-semi": 2,
+    "no-func-assign": 2,
+    "no-inner-declarations": 2,
+    "no-invalid-regexp": 2,
+    "no-irregular-whitespace": 2,
+    "no-negated-in-lhs": 2,
+    "no-obj-calls": 2,
+    "no-regex-spaces": 2,
+    "no-sparse-arrays": 2,
+    "no-unexpected-multiline": 1,
+    "no-unreachable": 1,
+    "use-isnan": 2,
+    "valid-jsdoc": 0,
+    "valid-typeof": 2,
+
     "max-len": [1, 80, 2, {"ignoreUrls": true}],
 
     "array-bracket-spacing": [2, "never"],
@@ -33,7 +58,28 @@
     "max-nested-callbacks": 0,
     "new-cap": [1, {
       "newIsCap": true,
-      "capIsNewExceptions": ["Map", "List"]
+      "capIsNewExceptions": [
+        "List", 
+        "Map", 
+        "OrderedMap", 
+        "Set", 
+        "OrderedSet", 
+        "Stack", 
+        "Range",
+        "Repeat",
+        "Record",
+        "Seq",
+        "KeyedSeq",
+        "IndexedSeq",
+        "Iterable",
+        "KeyedIterable",
+        "IndexedIterable",
+        "SetIterable",
+        "Collection",
+        "KeyedCollection",
+        "IndexedCollection",
+        "SetCollection"
+      ]
     }],
     "new-parens": 2,
     "newline-after-var": 0,
@@ -122,14 +168,23 @@
     "wrap-iife": [2, "any"],
     "yoda": 2,
 
-    "strict": [2, "never"],
+    "no-delete-var": 2,
+    "no-label-var": 2,
+    "no-shadow-restricted-names": 2,
+    "no-shadow": 1,
+    "no-undef-init": 1,
+    "no-undef": 0,
+    "no-undefined": 2,
+    "no-unused-vars": 0,
+    "no-use-before-define": 2,
+
+    "no-const-assign": 2,
+    "no-var": 2,
+    "prefer-const": 2,
 
     "default-case": 2,
     "dot-notation": 2,
     "dot-location": 0,
-    "comma-dangle": [2, "never"],
-    "no-cond-assign": 2,
-    "no-dupe-args": 2,
     "react/display-name": [0]
   }
 }
