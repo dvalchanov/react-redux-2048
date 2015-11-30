@@ -3,6 +3,9 @@
 start:
 	npm start
 
+debug:
+	npm run start:debug
+
 test:
 	npm run test
 
