@@ -9,7 +9,8 @@
     "test": "istanbul cover _mocha -- --compilers js:babel-core/register --require ./test/test_helper.js --recursive",
     "test:watch": "npm run test -- --watch",
     "test:lint": "eslint test",
-    "lint": "eslint src/scripts"
+    "lint": "eslint src/scripts",
+    "build": "webpack --config webpack.config.production.js --colors --bail"
   },
   "keywords": [
     "react",
@@ -19,6 +20,7 @@
     "babel",
     "hot",
     "eslint",
+    "istanbul",
     "mocha",
     "chai"
   ],

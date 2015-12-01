@@ -1,6 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var settings = require("./settings.json");
 
@@ -12,7 +13,7 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve("./dist"),
+    path: path.resolve("./build"),
     filename: "assets/[name]-[hash].js",
     publicPath: "/"
   },
@@ -25,6 +26,9 @@ module.exports = {
     }),
     new webpack.ProvidePlugin({
       React: "react"
+    }),
+    new ExtractTextPlugin("[name].css", {
+      allChunks: true
     })
   ],
 
@@ -48,11 +52,19 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        loader: "style!css?modules&importLoaders=2&sourceMap&localIdentName=[local]_[hash:base64:5]!less?outputStyle=expanded&sourceMap"
+        loader: ExtractTextPlugin.extract(
+          "style",
+          "css?modules&importLoaders=2&sourceMap&localIdentName=[local]_[hash:base64:5]!" +
+          "less?outputStyle=expanded&sourceMap"
+        )
       },
       {
         test: /\.scss$/,
-        loader: "style!css?modules&importLoaders=2&sourceMap&localIdentName=[local]_[hash:base64:5]!sass?outputStyle=expanded&sourceMap"
+        loader: ExtractTextPlugin.extract(
+          "style",
+          "css?modules&importLoaders=2&sourceMap&localIdentName=[local]_[hash:base64:5]!" +
+          "sass?outputStyle=expanded&sourceMap"
+        )
       },
       {
         test: /\.(jpg)$/,
@@ -60,9 +72,7 @@ module.exports = {
       },
       {
         test: /\.(png|gif|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loaders: [
-          "file-loader?hash=sha512&digest=hex&name=assets/[hash].[ext]"
-        ]
+        loader: "file-loader?hash=sha512&digest=hex&name=assets/[hash].[ext]"
       },
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
