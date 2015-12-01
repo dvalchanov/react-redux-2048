@@ -1,10 +1,12 @@
+var config = require("./webpack.config");
 var path = require("path");
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-var config = require("./webpack.config");
-
+/**
+ * Define global application variables.
+ */
 var definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify("false"),
   "process.env": {
@@ -12,23 +14,20 @@ var definePlugin = new webpack.DefinePlugin({
   }
 });
 
-config.devtool = "source-map";
-
+/**
+ * Output configuration for production.
+ */
 config.output = {
   path: path.resolve("./build"),
   filename: "[name].min.js",
   publicPath: ""
 };
 
-config.plugins = [
+/**
+ * Add production specific plugins to the common ones.
+ */
+config.plugins = config.commonPlugins.concat([
   definePlugin,
-  new HtmlWebpackPlugin({
-    title: "React + Redux Starter",
-    template: "src/index.html"
-  }),
-  new webpack.ProvidePlugin({
-    React: "react"
-  }),
   new ExtractTextPlugin("[name].min.css", {
     allChunks: true
   }),
@@ -36,7 +35,7 @@ config.plugins = [
     name: "vendor",
     path: "[name].min.js",
     minChunks: function (module, count) {
-      return module.resource && module.resource.indexOf(path.join(__dirname, 'node_modules')) !== -1;
+      return module.resource && module.resource.indexOf(path.resolve('node_modules')) !== -1;
     }
   }),
   new webpack.optimize.OccurenceOrderPlugin(true),
@@ -47,6 +46,9 @@ config.plugins = [
     },
     sourceMap: false
   }),
-];
+]);
 
+/**
+ * Export the configuration object.
+ */
 module.exports = config;
