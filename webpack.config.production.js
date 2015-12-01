@@ -12,6 +12,8 @@ var definePlugin = new webpack.DefinePlugin({
   }
 });
 
+config.devtool = "source-map";
+
 config.output = {
   path: path.resolve("./build"),
   filename: "[name].min.js",

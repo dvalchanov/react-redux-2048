@@ -4,13 +4,14 @@
   "description": "Starter Kit for React + Redux application with Webpack",
   "main": "src/main.js",
   "scripts": {
+    "postinstall": "webpack --config webpack.config.production.js --colors --bail",
     "start": "node server.js",
     "start:debug": "export DEBUG=true && npm start",
     "test": "istanbul cover _mocha -- --compilers js:babel-core/register --require ./test/test_helper.js --recursive",
     "test:watch": "npm run test -- --watch",
     "test:lint": "eslint test",
     "lint": "eslint src/scripts",
-    "build": "webpack --config webpack.config.production.js --colors --bail"
+    "build": "rm build/*; webpack --config webpack.config.production.js --colors --bail"
   },
   "keywords": [
     "react",

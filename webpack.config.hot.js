@@ -8,6 +8,8 @@ var definePlugin = new webpack.DefinePlugin({
   }
 });
 
+config.devtool = "source-map";
+
 config.entry = [
   "webpack-dev-server/client?http://localhost:3000",
   "webpack/hot/only-dev-server",
