@@ -10,10 +10,93 @@ body {
  */
 .wrapper {}
 
+$board: #BBADA0;
+$text-dark: #776E65;
+$text-light: #F9F6F2;
+
+$empty-tile: #CDC1B4;
+$tile-2: #EEE4DA;
+$tile-4: #EDE0C8;
+$tile-8: #F2B179;
+$tile-16: #F59563;
+$tile-32: #F67C5F;
+$tile-64: #F65E3B;
+$tile-128: #EDCF72;
+$tile-256: #EDCC61;
+$tile-512: #EDC850;
+$tile-1024: #EAC526;
+$tile-2048: #E4BC00;
+
 /*
  * Global (Standard usage)
  */
 :global {
+  wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 250px;
+    height: 250px;
+    display: block;
+    font-family: sans-serif;
+
+    border-radius: 5px;
+    background-color: #BBADA0;
+  }
+
+  div.tile {
+    transition: .2s ease-in-out;
+
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    line-height: 50px;
+    top: 10px;
+    left: 10px;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  #tiles {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 1;
+  }
+
+  #board {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+    position: relative;
+    z-index: 0;
+  }
+
+  column {
+    flex: 0 1 50px;
+    line-height: 50px;
+    height: 50px;
+    margin: 5px;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    background-color: $empty-tile;
+  }
+
+  .tile-0 { background-color: $empty-tile; }
+  .tile-2 { background-color: $tile-2; color: $text-dark; }
+  .tile-4 { background-color: $tile-4; color: $text-dark; }
+  .tile-8 { background-color: $tile-8; color: $text-light;}
+  .tile-16 { background-color: $tile-16; color: $text-light; }
+  .tile-32 { background-color: $tile-32; color: $text-light; }
+  .tile-64 { background-color: $tile-64; color: $text-light; }
+  .tile-128 { background-color: $tile-128; color: $text-light; }
+  .tile-256 { background-color: $tile-256; color: $text-light; }
+  .tile-512 { background-color: $tile-512; color: $text-light; }
+  .tile-1024 { background-color: $tile-1024; color: $text-light; }
+  .tile-2048 { background-color: $tile-2048; color: $text-light; }
+
   .wrapper {}
 }
 

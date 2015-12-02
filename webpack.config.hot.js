@@ -11,6 +11,8 @@ var definePlugin = new webpack.DefinePlugin({
   }
 });
 
+config.devtool = "source-map";
+
 /**
  * Change entry to use webpack-dev-server for hot reload.
  */

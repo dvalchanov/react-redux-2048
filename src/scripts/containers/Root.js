@@ -7,7 +7,7 @@ import thunk from "redux-thunk";
 
 import {createStore, renderDevTools} from "../utils/devTools";
 import reducers from "../reducers";
-import App from "./App";
+import Game from "./Game";
 
 const store = compose(
   applyMiddleware(thunk)
@@ -21,8 +21,7 @@ export default class Root extends Component {
       <div>
         <Provider store={store}>
           <Router history={history}>
-            <Route component={App} path="/">
-            </Route>
+            <Route component={Game} path="/" />
           </Router>
         </Provider>
         {renderDevTools(store)}

@@ -61,7 +61,6 @@ var config = {
   ],
 
   module: {
-
     /**
      * Loaders to be executed ahead of the others.
      *

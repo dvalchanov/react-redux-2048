@@ -1,9 +1,11 @@
 import {combineReducers} from "redux";
-import example from "./Example";
+import game from "./Game";
+import board from "./Board";
 
 /**
  * Import and combine reducers.
  */
 export default combineReducers({
-  example
+  game,
+  board
 });
