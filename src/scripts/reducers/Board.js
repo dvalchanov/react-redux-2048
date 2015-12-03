@@ -33,31 +33,14 @@ const initialState = Map({
   size: [4, 4],
   empty: fromJS(generateCells(4, 4)),
   tiles: List(),
-  grid: generateGrid(4, 4)
+  //grid: generateGrid(4, 4)
+  grid: fromJS([
+    [[], [], [], []],
+    [[], [], [], [{x: 1, y: 3, value: 2, id: 1}]],
+    [[], [], [{x: 2, y: 2, value: 2, id: 0}], []],
+    [[], [], [], []]
+  ])
 });
-
-//[
-  //[[ ], [ ], [y2], [ ]],
-  //[[z], [ ], [y1], [ ]],
-  //[[ ], [x], [ ], [ ]],
-  //[[ ], [z], [ ], [ ]]
-//]
-//
-//Click Down
-//Move x (stays on the same place)
-//Move z
-//Move y1 on the first available position
-//Move y2 on the first available position (y1 position should be available)
-//Check if there are two tiles on the same position and merge them
-
-// Up    - up -> down
-// Down  - down -> up
-// Left  - left -> right
-// Right - right -> left
-
-// Check what is empty after each round!!
-// [{x: 1, y: 1}, {x: 3, y: 1}]
-
 
 let id = 0;
 
@@ -82,7 +65,7 @@ function getTile(state) {
   return state.merge({empty});
 }
 
-const dir = 2;
+const dir = 0;
 
 function getDirection(n) {
   const directions = [
@@ -139,15 +122,14 @@ function slideTile(state, tile) {
 function slideTiles(state) {
   let tiles = state.get("grid").flatten(2);
 
-  // or y
+  // fix
   if (dir === 1 || dir === 3) {
-    tiles = tiles.sortBy(t => t.get("x"));
-  } else {
     tiles = tiles.sortBy(t => t.get("y"));
+  } else {
+    tiles = tiles.sortBy(t => t.get("x"));
   }
 
-  // Reverse if needed
-
+  console.log(tiles.toJS());
   tiles.forEach((tile) => {
     state = slideTile(state, tile);
   });
@@ -164,6 +146,7 @@ function actualize(state) {
 
       if (tiles.size) {
         tiles.forEach((tile, index) => {
+          console.log(tile.get("id"), [row, column]);
           if (tile.get("x") !== row || tile.get("y") !== column) {
             grid = grid.updateIn([row, column, index], t => {
               return t.merge({x: row, y: column});
@@ -174,7 +157,6 @@ function actualize(state) {
     }
   }
 
-
   return state.set("grid", grid);
 }
 
@@ -182,7 +164,8 @@ function actualize(state) {
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.NEW_TILE:
-      return getTile(state);
+      return state;
+      //return getTile(state);
 
     case actionTypes.SLIDE_TILES:
       state = slideTiles(state);
