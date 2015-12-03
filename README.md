@@ -1,6 +1,6 @@
 # react-redux-starter
 
-**WIP**
+**NOTE: Work In Progress**
 
 This is an application starter using the following:
 - React
