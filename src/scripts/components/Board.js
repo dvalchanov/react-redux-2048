@@ -3,11 +3,13 @@ import {connect} from "react-redux";
 import {Tile} from "./";
 import _ from "lodash";
 
-// Smart component (container?)
+const startTiles = 2;
+
 @connect(state => {
   return {
     board: state.board,
-    size: state.board.get("size")
+    size: state.board.get("size"),
+    forSlide: state.board.get("forSlide")
   };
 })
 export default class Board extends Component {
@@ -20,7 +22,9 @@ export default class Board extends Component {
   }
 
   componentDidMount() {
-    this.context.actions.initTiles();
+    _.times(startTiles, () => {
+      this.context.actions.newTile();
+    });
 
     setTimeout(() => {
       this.context.actions.slideTiles();
@@ -31,25 +35,33 @@ export default class Board extends Component {
     }, 1000);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.forSlide && nextProps.forSlide !== this.props.forSlide) {
+      console.log("HERE");
+      this.context.actions.actualize();
+    }
+  }
+
   render() {
     const {size} = this.props;
 
-    const cells = _.range(_.reduce(size, x => x * x));
     // In component
     // Should return value (position, coordinates?)
+    // Should render only once
+    const cells = _.range(_.reduce(size, x => x * x));
     const cellViews = _.map(cells, index => {
       return <column key={index} />;
     });
 
-    const realTiles = this.props.board.get("tiles");
-    const againTiles = realTiles.map((tile, index) => {
+    const tiles = this.props.board.get("grid").flatten(2);
+    const tileViews = tiles.map((tile, index) => {
       return <Tile key={index} {...tile.toJS()} />;
     });
 
     return (
       <wrapper>
         <container id="tiles">
-          {againTiles}
+          {tileViews}
         </container>
         <container id="board">
           {cellViews}

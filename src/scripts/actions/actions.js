@@ -1,13 +1,5 @@
 import actionTypes from "./actionTypes";
 
-export function initTiles() {
-  return dispatch => {
-    dispatch({
-      type: actionTypes.INIT_TILES
-    });
-  };
-}
-
 export function newTile() {
   return dispatch => {
     dispatch({
@@ -20,6 +12,14 @@ export function slideTiles() {
   return dispatch => {
     dispatch({
       type: actionTypes.SLIDE_TILES
+    });
+  };
+}
+
+export function actualize() {
+  return dispatch => {
+    dispatch({
+      type: actionTypes.ACTUALIZE
     });
   };
 }
