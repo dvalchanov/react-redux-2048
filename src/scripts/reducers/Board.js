@@ -59,6 +59,8 @@ const initialState = Map({
 // [{x: 1, y: 1}, {x: 3, y: 1}]
 
 
+let id = 0;
+
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -72,42 +74,61 @@ function getTile(state) {
   let tile = state.getIn(["empty", cell]);
   const {x, y} = tile.toJS();
   tile = tile.set("value", 2);
+  tile = tile.set("id", id);
+  id += 1;
   state = state.updateIn(["grid", x, y], arr => arr.push(tile));
   const empty = state.get("empty").splice(cell, 1);
 
   return state.merge({empty});
 }
 
-//function slide() {
-//}
+const dir = 2;
 
-function findAvailable(state, tile) {
+function getDirection(n) {
+  const directions = [
+    {x: 1, y: 0},  // down -> top
+    {x: 0, y: 1},  // right -> left
+    {x: -1, y: 0}, // top -> down
+    {x: 0, y: -1}  // left -> right
+  ];
+
+  return directions[n] || directions[0];
+}
+
+function slideTile(state, tile) {
   let current;
-  const vector = {x: -1, y: 0};
+  const direction = getDirection(dir);
   let grid = state.get("grid");
 
-  for (const i in vector) {
-    if ({}.hasOwnProperty.call(vector, i)) {
-      if (vector[i] !== 0) {
+  for (const i in direction) {
+    if ({}.hasOwnProperty.call(direction, i)) {
+      if (direction[i] !== 0) {
         current = i;
       }
     }
   }
 
   const from = tile.get(current);
-  const to = vector[current] === 1 ? 0 : 3;
+  const to = direction[current] === 1 ? 0 : 3;
   let found = false;
 
   Range(to, from).forEach(index => {
-    const path = [index, tile.get("y")];
-    const cell = grid.getIn(path);
+    if (!found) {
+      const path = (
+        current === "x" ?
+        [index, tile.get("y")] :
+        [tile.get("x"), index]
+      );
+      const cell = grid.getIn(path);
 
-    if (!cell.size && !found) {
+      if (cell.size && cell.getIn([0, "value"]) !== tile.get("value")) return;
+
       state = state.set("forSlide", true);
       grid = grid.updateIn(path, arr => arr.push(tile));
       grid = grid.updateIn([tile.get("x"), tile.get("y")], arr => {
         return arr.pop();
       });
+
       found = true;
     }
   });
@@ -115,17 +136,15 @@ function findAvailable(state, tile) {
   return state.set("grid", grid);
 }
 
-function slideTile(state, tile) {
-  state = findAvailable(state, tile);
-
-  return state;
-}
-
 function slideTiles(state) {
   let tiles = state.get("grid").flatten(2);
 
   // or y
-  tiles = tiles.sortBy(t => t.get("x"));
+  if (dir === 1 || dir === 3) {
+    tiles = tiles.sortBy(t => t.get("x"));
+  } else {
+    tiles = tiles.sortBy(t => t.get("y"));
+  }
 
   // Reverse if needed
 
@@ -141,17 +160,20 @@ function actualize(state) {
 
   for (let row = 0; row <= 3; row++) {
     for (let column = 0; column <= 3; column++) {
-      const tile = grid.getIn([row, column]);
+      const tiles = grid.getIn([row, column]);
 
-      if (tile.size) {
-        if (tile.get("x") !== row && tile.get("y") !== column) {
-          grid = grid.updateIn([row, column, 0], t => {
-            return t.merge({x: row, y: column});
-          });
-        }
+      if (tiles.size) {
+        tiles.forEach((tile, index) => {
+          if (tile.get("x") !== row || tile.get("y") !== column) {
+            grid = grid.updateIn([row, column, index], t => {
+              return t.merge({x: row, y: column});
+            });
+          }
+        });
       }
     }
   }
+
 
   return state.set("grid", grid);
 }

@@ -37,7 +37,6 @@ export default class Board extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.forSlide && nextProps.forSlide !== this.props.forSlide) {
-      console.log("HERE");
       this.context.actions.actualize();
     }
   }
