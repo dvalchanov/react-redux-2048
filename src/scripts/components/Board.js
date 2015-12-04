@@ -22,22 +22,38 @@ export default class Board extends Component {
   }
 
   componentDidMount() {
+    document.addEventListener("keyup", (e) => {
+      this.context.actions.slideTiles(e.keyCode);
+    });
+
     _.times(startTiles, () => {
       this.context.actions.newTile();
     });
 
     setTimeout(() => {
-      this.context.actions.slideTiles();
-
       //setInterval(() => {
         //this.context.actions.newTile();
       //}, 1000);
     }, 1000);
   }
 
+  called: false
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.forSlide && nextProps.forSlide !== this.props.forSlide) {
-      this.context.actions.actualize();
+      setTimeout(() => {
+        this.context.actions.actualize();
+        this.called = false;
+      }, 0);
+    }
+  }
+
+  onTransitionEnd = (e) => {
+    if (e.propertyName === "transform") return;
+    if (!this.called) {
+      this.context.actions.mergeTiles();
+      this.context.actions.newTile();
+      this.called = true;
     }
   }
 
@@ -53,8 +69,12 @@ export default class Board extends Component {
     });
 
     const tiles = this.props.board.get("grid").flatten(2);
-    const tileViews = tiles.map((tile, index) => {
-      return <Tile key={index} {...tile.toJS()} />;
+    const tileViews = tiles.map(tile => {
+      return <Tile
+               key={tile.get("id")}
+               onTransitionEnd={this.onTransitionEnd}
+               {...tile.toJS()}
+             />;
     });
 
     return (

@@ -1,5 +1,6 @@
 import {Map, List, Range, fromJS} from "immutable";
 import actionTypes from "../actions/actionTypes";
+import {KEYCODES, DIRECTIONS} from "../constants";
 import _ from "lodash";
 
 function generateCells(width, height) {
@@ -24,7 +25,6 @@ function generateGrid(width, height) {
     });
   });
 
-
   return cells;
 }
 
@@ -33,21 +33,16 @@ const initialState = Map({
   size: [4, 4],
   empty: fromJS(generateCells(4, 4)),
   tiles: List(),
-  //grid: generateGrid(4, 4)
-  grid: fromJS([
-    [[], [], [], []],
-    [[], [], [], [{x: 1, y: 3, value: 2, id: 1}]],
-    [[], [], [{x: 2, y: 2, value: 2, id: 0}], []],
-    [[], [], [], []]
-  ])
+  grid: generateGrid(4, 4)
 });
-
-let id = 0;
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+let id = 0;
+
+// FIX
 function getTile(state) {
   const max = state.get("empty").size - 1;
   const cell = getRandomNumber(0, max);
@@ -65,50 +60,51 @@ function getTile(state) {
   return state.merge({empty});
 }
 
-const dir = 0;
-
 function getDirection(n) {
-  const directions = [
-    {x: 1, y: 0},  // down -> top
-    {x: 0, y: 1},  // right -> left
-    {x: -1, y: 0}, // top -> down
-    {x: 0, y: -1}  // left -> right
-  ];
-
-  return directions[n] || directions[0];
+  return DIRECTIONS[n];
 }
 
-function slideTile(state, tile) {
-  let current;
-  const direction = getDirection(dir);
-  let grid = state.get("grid");
+function getCurrent(direction) {
+  let axis;
+  const directions = getDirection(direction);
 
-  for (const i in direction) {
-    if ({}.hasOwnProperty.call(direction, i)) {
-      if (direction[i] !== 0) {
-        current = i;
+  for (const i in directions) {
+    if ({}.hasOwnProperty.call(directions, i)) {
+      if (directions[i] !== 0) {
+        axis = i;
       }
     }
   }
 
-  const from = tile.get(current);
-  const to = direction[current] === 1 ? 0 : 3;
+  return {
+    axis: axis,
+    value: directions[axis]
+  };
+}
+
+// FIX
+function slideTile(state, tile, direction) {
+  const {axis, value} = getCurrent(direction);
+  const from = tile.get(axis);
+  const to = value === 1 ? 0 : 3;
+
   let found = false;
 
   Range(to, from).forEach(index => {
     if (!found) {
       const path = (
-        current === "x" ?
-        [index, tile.get("y")] :
-        [tile.get("x"), index]
+        axis === "x" ?
+        ["grid", index, tile.get("y")] :
+        ["grid", tile.get("x"), index]
       );
-      const cell = grid.getIn(path);
+
+      const cell = state.getIn(path);
 
       if (cell.size && cell.getIn([0, "value"]) !== tile.get("value")) return;
 
       state = state.set("forSlide", true);
-      grid = grid.updateIn(path, arr => arr.push(tile));
-      grid = grid.updateIn([tile.get("x"), tile.get("y")], arr => {
+      state = state.updateIn(path, arr => arr.push(tile));
+      state = state.updateIn(["grid", tile.get("x"), tile.get("y")], arr => {
         return arr.pop();
       });
 
@@ -116,22 +112,21 @@ function slideTile(state, tile) {
     }
   });
 
-  return state.set("grid", grid);
+  return state;
 }
 
-function slideTiles(state) {
+function sortTiles(tiles, direction) {
+  const {axis, value} = getCurrent(direction);
+  tiles = tiles.sortBy(t => t.get(axis));
+  if (value < 0) tiles = tiles.reverse();
+  return tiles;
+}
+
+function slideTiles(state, direction) {
   let tiles = state.get("grid").flatten(2);
-
-  // fix
-  if (dir === 1 || dir === 3) {
-    tiles = tiles.sortBy(t => t.get("y"));
-  } else {
-    tiles = tiles.sortBy(t => t.get("x"));
-  }
-
-  console.log(tiles.toJS());
+  tiles = sortTiles(tiles, direction);
   tiles.forEach((tile) => {
-    state = slideTile(state, tile);
+    state = slideTile(state, tile, direction);
   });
 
   return state;
@@ -140,42 +135,77 @@ function slideTiles(state) {
 function actualize(state) {
   let grid = state.get("grid");
 
-  for (let row = 0; row <= 3; row++) {
-    for (let column = 0; column <= 3; column++) {
-      const tiles = grid.getIn([row, column]);
-
-      if (tiles.size) {
-        tiles.forEach((tile, index) => {
-          console.log(tile.get("id"), [row, column]);
-          if (tile.get("x") !== row || tile.get("y") !== column) {
-            grid = grid.updateIn([row, column, index], t => {
-              return t.merge({x: row, y: column});
+  grid.forEach((row, x) => {
+    row.forEach((cell, y) => {
+      if (cell.size) {
+        cell.forEach((tile, index) => {
+          if (tile.get("x") !== x || tile.get("y") !== y) {
+            grid = grid.updateIn([x, y, index], t => {
+              return t.merge({x, y});
             });
           }
         });
       }
-    }
-  }
+    });
+  });
+
+  state = state.set("forSlide", false);
 
   return state.set("grid", grid);
 }
 
+function mergeTiles(state) {
+  let grid = state.get("grid");
+
+  const empty = [];
+
+  console.log("MERGING");
+
+  grid.forEach((row, x) => {
+    row.forEach((cell, y) => {
+      if (!cell.size) {
+        empty.push({x, y});
+      }
+
+      if (cell.size > 1) {
+        const newValue = cell.reduce((t1, t2) => {
+          return t1.get("value") + t2.get("value");
+        });
+
+        const newTile = Map({
+          x: cell.getIn([0, "x"]),
+          y: cell.getIn([0, "y"]),
+          value: newValue,
+          id: id
+        });
+
+        id += 1;
+
+        grid = grid.setIn([x, y], List.of(newTile));
+      }
+    });
+  });
+
+  state = state.set("grid", grid);
+  return state.set("empty", fromJS(empty));
+}
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.NEW_TILE:
-      return state;
-      //return getTile(state);
+      return getTile(state);
 
     case actionTypes.SLIDE_TILES:
-      state = slideTiles(state);
-      return state;
+      const direction = KEYCODES[action.keyCode];
+      if (typeof direction === "undefined") return state;
+      return slideTiles(state, direction);
 
     case actionTypes.ACTUALIZE:
       state = actualize(state);
       return state;
 
     case actionTypes.MERGE_TILES:
+      state = mergeTiles(state);
       return state;
 
     default:

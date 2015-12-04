@@ -8,10 +8,11 @@ export function newTile() {
   };
 }
 
-export function slideTiles() {
+export function slideTiles(keyCode) {
   return dispatch => {
     dispatch({
-      type: actionTypes.SLIDE_TILES
+      type: actionTypes.SLIDE_TILES,
+      keyCode
     });
   };
 }
@@ -20,6 +21,14 @@ export function actualize() {
   return dispatch => {
     dispatch({
       type: actionTypes.ACTUALIZE
+    });
+  };
+}
+
+export function mergeTiles() {
+  return dispatch => {
+    dispatch({
+      type: actionTypes.MERGE_TILES
     });
   };
 }
