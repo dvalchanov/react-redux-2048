@@ -49,6 +49,7 @@ export default class Board extends Component {
   }
 
   onTransitionEnd = (e) => {
+    // TODO - wait for all transitions to end before creating new one
     if (e.propertyName === "transform") return;
     if (!this.called) {
       this.context.actions.mergeTiles();

@@ -88,29 +88,39 @@ function slideTile(state, tile, direction) {
   const from = tile.get(axis);
   const to = value === 1 ? 0 : 3;
 
-  let found = false;
+  let found;
 
   Range(to, from).forEach(index => {
+    const path = (
+      axis === "x" ?
+      ["grid", index, tile.get("y")] :
+      ["grid", tile.get("x"), index]
+    );
+
+    const cell = state.getIn(path);
+
+    if (cell.size && cell.getIn([0, "value"]) !== tile.get("value")) {
+      found = null;
+      return;
+    }
+
+    if (cell.size > 1) {
+      found = null;
+      return;
+    }
+
     if (!found) {
-      const path = (
-        axis === "x" ?
-        ["grid", index, tile.get("y")] :
-        ["grid", tile.get("x"), index]
-      );
-
-      const cell = state.getIn(path);
-
-      if (cell.size && cell.getIn([0, "value"]) !== tile.get("value")) return;
-
-      state = state.set("forSlide", true);
-      state = state.updateIn(path, arr => arr.push(tile));
-      state = state.updateIn(["grid", tile.get("x"), tile.get("y")], arr => {
-        return arr.pop();
-      });
-
-      found = true;
+      found = path;
     }
   });
+
+  if (found) {
+    state = state.set("forSlide", true);
+    state = state.updateIn(found, arr => arr.push(tile));
+    state = state.updateIn(["grid", tile.get("x"), tile.get("y")], arr => {
+      return arr.pop();
+    });
+  }
 
   return state;
 }
@@ -158,8 +168,6 @@ function mergeTiles(state) {
   let grid = state.get("grid");
 
   const empty = [];
-
-  console.log("MERGING");
 
   grid.forEach((row, x) => {
     row.forEach((cell, y) => {

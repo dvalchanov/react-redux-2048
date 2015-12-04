@@ -31,6 +31,9 @@ $tile-2048: #E4BC00;
  * Global (Standard usage)
  */
 :global {
+  .merged-appear { transform: scale(1.2); }
+  .merged-appear.merged-appear-active { transform: scale(1); }
+
   .tile-appear { transform: scale(0.3); }
   .tile-appear.tile-appear-active { transform: scale(1); }
 
@@ -47,7 +50,8 @@ $tile-2048: #E4BC00;
   }
 
   div.tile {
-    transition: .2s ease-in-out;
+    transition: .1s ease-in-out;
+
     width: 50px;
     height: 50px;
     position: absolute;
