@@ -32,7 +32,6 @@ const initialState = Map({
   forSlide: false,
   size: [4, 4],
   empty: fromJS(generateCells(4, 4)),
-  tiles: List(),
   grid: generateGrid(4, 4)
 });
 
@@ -42,7 +41,7 @@ function getRandomNumber(min, max) {
 
 let id = 0;
 
-// FIX
+// TODO - fix
 function getTile(state) {
   const max = state.get("empty").size - 1;
   const cell = getRandomNumber(0, max);
@@ -82,7 +81,7 @@ function getCurrent(direction) {
   };
 }
 
-// FIX
+// TODO - fix
 function slideTile(state, tile, direction) {
   const {axis, value} = getCurrent(direction);
   const from = tile.get(axis);
@@ -109,9 +108,7 @@ function slideTile(state, tile, direction) {
       return;
     }
 
-    if (!found) {
-      found = path;
-    }
+    if (!found) found = path;
   });
 
   if (found) {
