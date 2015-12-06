@@ -31,6 +31,15 @@ $tile-2048: #E4BC00;
  * Global (Standard usage)
  */
 :global {
+  @for $row from 0 through 3 {
+    @for $column from 0 through 3 {
+      .cell-#{$row}-#{$column} {
+        top: #{10 + (60 * $row)}px !important;
+        left: #{10 + (60 * $column)}px !important;
+      }
+    }
+  }
+
   .merged-appear { transform: scale(1.2); }
   .merged-appear.merged-appear-active { transform: scale(1); }
 
@@ -56,8 +65,6 @@ $tile-2048: #E4BC00;
     height: 50px;
     position: absolute;
     line-height: 50px;
-    top: 10px;
-    left: 10px;
     border-radius: 5px;
     text-align: center;
   }
@@ -102,7 +109,5 @@ $tile-2048: #E4BC00;
   .tile-512 { background-color: $tile-512; color: $text-light; }
   .tile-1024 { background-color: $tile-1024; color: $text-light; }
   .tile-2048 { background-color: $tile-2048; color: $text-light; }
-
-  .wrapper {}
 }
 

@@ -1,4 +1,5 @@
 import {Component, PropTypes} from "react";
+import classNames from "classnames";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 export default class Tile extends Component {
@@ -26,21 +27,20 @@ export default class Tile extends Component {
 
   componentDidMount() {
     const tile = this.refs.tile;
-    // Sometimes transition doesn't happen!?!?
+    // Transition doesn't happen on DOWN !?!?
     tile.addEventListener("transitionend", this.props.onTransitionEnd, false);
   }
 
   render() {
     const {x, y, value} = this.props;
 
-    // UPDATED too many times
+    const cx = classNames(
+      "tile",
+      `tile-${value}`,
+      `cell-${x}-${y}`
+    );
 
-    // Queue ?
-    // Transitions should happen one after another
-    const styles = {
-      top: 10 + (60 * x),
-      left: 10 + (60 * y)
-    };
+    // Transitions should happen one after another - queue?
 
     return (
       <ReactCSSTransitionGroup
@@ -49,7 +49,7 @@ export default class Tile extends Component {
         transitionEnterTimeout={0}
         transitionLeaveTimeout={0}
         transitionAppearTimeout={1000} >
-        <div style={styles} ref="tile" className="tile tile-2">{value}</div>
+        <div ref="tile" className={cx}>{value}</div>
       </ReactCSSTransitionGroup>
     );
   }

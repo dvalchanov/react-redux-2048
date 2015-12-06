@@ -29,6 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "babel": "~5.8.29",
+    "classnames": "^2.2.1",
     "history": "^1.13.1",
     "immutable": "^3.7.5",
     "keymirror": "^0.1.1",
