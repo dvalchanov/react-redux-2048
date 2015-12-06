@@ -15,3 +15,5 @@ export const KEYCODES = {
   40: DOWN,
   39: RIGHT
 };
+
+export const INITIAL = 2;

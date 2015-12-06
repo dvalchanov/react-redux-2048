@@ -1,6 +1,6 @@
 import {Map, List, Range, fromJS} from "immutable";
 import actionTypes from "../actions/actionTypes";
-import {KEYCODES, DIRECTIONS} from "../constants";
+import {KEYCODES, DIRECTIONS, INITIAL} from "../constants";
 import _ from "lodash";
 
 function generateCells(width, height) {
@@ -28,37 +28,84 @@ function generateGrid(width, height) {
   return cells;
 }
 
+// TODO - fix (4, 4);
 const initialState = Map({
   forSlide: false,
   size: [4, 4],
-  empty: fromJS(generateCells(4, 4)),
+  cells: fromJS(generateCells(4, 4)),
   grid: generateGrid(4, 4)
 });
 
-function getRandomNumber(min, max) {
+/**
+ * New Random Tile
+ *
+ * newTile.js util ?
+ */
+let id = 0;
+
+/**
+ * Get a random number in a certain range.
+ *
+ * @param {Number} min
+ * @param {Number} max
+ * @returns {Number}
+ */
+function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-let id = 0;
 
-// TODO - fix
-function getTile(state) {
-  const max = state.get("empty").size - 1;
-  const cell = getRandomNumber(0, max);
-
-  if (state.get("empty").size === 0) return state;
-
-  let tile = state.getIn(["empty", cell]);
-  const {x, y} = tile.toJS();
-  tile = tile.set("value", 2);
-  tile = tile.set("id", id);
-  id += 1;
-  state = state.updateIn(["grid", x, y], arr => arr.push(tile));
-  const empty = state.get("empty").splice(cell, 1);
-
-  return state.merge({empty});
+/**
+ * Get a random cell from the list of empty cells.
+ *
+ * @param {Object} state
+ * @returns {Object}
+ */
+function randomCell(state) {
+  const max = state.get("cells").size - 1;
+  return randomNumber(0, max);
 }
 
+/**
+ * Push a new tile into the chosen cell.
+ *
+ * @param {Object} state
+ * @param {Object} tile
+ * @returns {Object}
+ */
+function addTile(state, tile) {
+  return state.updateIn(["grid", tile.get("x"), tile.get("y")], cell => {
+    return cell.push(tile.merge({
+      id: id++,
+      value: INITIAL
+    }));
+  });
+}
+
+/**
+ * Creates a new random tile in the grid by taking it from the list of
+ * available empty tiles.
+ *
+ * @param {Object} state
+ * @returns {Object}
+ */
+function newTile(state) {
+  if (!state.get("cells").size) return state;
+
+  const cell = randomCell(state);
+  const tile = state.getIn(["cells", cell]);
+
+  state = addTile(state, tile);
+
+  return state.set({
+    cells: state.get("cells").splice(cell, 1)
+  });
+}
+
+
+/**
+ * Slide
+ */
 function getDirection(n) {
   return DIRECTIONS[n];
 }
@@ -164,12 +211,12 @@ function actualize(state) {
 function mergeTiles(state) {
   let grid = state.get("grid");
 
-  const empty = [];
+  const cells = [];
 
   grid.forEach((row, x) => {
     row.forEach((cell, y) => {
       if (!cell.size) {
-        empty.push({x, y});
+        cells.push({x, y});
       }
 
       if (cell.size > 1) {
@@ -192,13 +239,13 @@ function mergeTiles(state) {
   });
 
   state = state.set("grid", grid);
-  return state.set("empty", fromJS(empty));
+  return state.set("cells", fromJS(cells));
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.NEW_TILE:
-      return getTile(state);
+      return newTile(state);
 
     case actionTypes.SLIDE_TILES:
       const direction = KEYCODES[action.keyCode];
