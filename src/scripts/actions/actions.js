@@ -8,10 +8,10 @@ export function newTile() {
   };
 }
 
-export function slideTiles(keyCode) {
+export function moveTiles(keyCode) {
   return dispatch => {
     dispatch({
-      type: actionTypes.SLIDE_TILES,
+      type: actionTypes.MOVE_TILES,
       keyCode
     });
   };

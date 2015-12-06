@@ -1,9 +1,8 @@
 import {generateActions} from "../utils/actions";
 
 const actions = [
-  "INIT_TILES",
   "NEW_TILE",
-  "SLIDE_TILES",
+  "MOVE_TILES",
   "ACTUALIZE",
   "MERGE_TILES"
 ];

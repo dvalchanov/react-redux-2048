@@ -9,7 +9,7 @@ const startTiles = 2;
   return {
     board: state.board,
     size: state.board.get("size"),
-    forSlide: state.board.get("forSlide")
+    isActual: state.board.get("isActual")
   };
 })
 export default class Board extends Component {
@@ -23,7 +23,7 @@ export default class Board extends Component {
 
   componentDidMount() {
     document.addEventListener("keyup", (e) => {
-      this.context.actions.slideTiles(e.keyCode);
+      this.context.actions.moveTiles(e.keyCode);
     });
 
     _.times(startTiles, () => {
@@ -40,7 +40,7 @@ export default class Board extends Component {
   called: false
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.forSlide && nextProps.forSlide !== this.props.forSlide) {
+    if (!nextProps.isActual && nextProps.isActual !== this.props.isActual) {
       setTimeout(() => {
         this.context.actions.actualize();
         this.called = false;
