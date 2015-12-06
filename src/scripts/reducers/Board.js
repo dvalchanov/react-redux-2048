@@ -1,6 +1,6 @@
 import {Map, List, Range} from "immutable";
 import actionTypes from "../actions/actionTypes";
-import {KEYCODES, DIRECTIONS, INITIAL} from "../constants";
+import {VECTORS, INITIAL} from "../constants";
 import _ from "lodash";
 
 /**
@@ -126,8 +126,8 @@ function newTile(state) {
  * @param {Number} n
  * @returns {Object}
  */
-function getDirection(n) {
-  return DIRECTIONS[n];
+function getVector(direction) {
+  return VECTORS[direction];
 }
 
 /**
@@ -138,7 +138,7 @@ function getDirection(n) {
  */
 function getCurrent(direction) {
   let axis;
-  const directions = getDirection(direction);
+  const directions = getVector(direction);
 
   for (const i in directions) {
     if ({}.hasOwnProperty.call(directions, i)) {
@@ -324,17 +324,13 @@ export default (state = initialState, action) => {
       return newTile(state);
 
     case actionTypes.MOVE_TILES:
-      const direction = KEYCODES[action.keyCode];
-      if (typeof direction === "undefined") return state;
-      return moveTiles(state, direction);
+      return moveTiles(state, action.direction);
 
     case actionTypes.ACTUALIZE:
-      state = actualize(state);
-      return state;
+      return actualize(state);
 
     case actionTypes.MERGE_TILES:
-      state = mergeTiles(state);
-      return state;
+      return mergeTiles(state);
 
     default:
       return state;
