@@ -1,6 +1,6 @@
 import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
-import {Tile} from "./";
+import {Grid, Tile} from "./";
 import _ from "lodash";
 
 const startTiles = 2;
@@ -55,14 +55,6 @@ export default class Board extends Component {
   render() {
     const {size} = this.props;
 
-    // In component
-    // Should return value (position, coordinates?)
-    // Should render only once
-    const cells = _.range(_.reduce(size, x => x * x));
-    const cellViews = _.map(cells, index => {
-      return <column key={index} />;
-    });
-
     const tiles = this.props.board.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
       return <Tile
@@ -77,9 +69,7 @@ export default class Board extends Component {
         <container id="tiles">
           {tileViews}
         </container>
-        <container id="board">
-          {cellViews}
-        </container>
+        <Grid size={size} />
       </wrapper>
     );
   }
