@@ -40,6 +40,7 @@ export default class Tile extends Component {
       `cell-${x}-${y}`
     );
 
+    // TODO - On too fast clicking doesn't handle it
     // Transitions should happen one after another - queue?
 
     return (

@@ -220,6 +220,10 @@ function moveTile(state, tile, direction) {
     state = state.updateIn(["grid", tile.get("x"), tile.get("y")], arr => {
       return arr.pop();
     });
+
+    // Set the class in animation frame?! original 2048
+    //window.requestAnimationFrame(function() {
+    //});
   }
 
   return state;

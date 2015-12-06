@@ -33,12 +33,15 @@ export default class Board extends Component {
 
   called: false
 
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.isActual && nextProps.isActual !== this.props.isActual) {
+  componentDidUpdate(prevProps) {
+    if (!this.props.isActual && prevProps.isActual !== this.props.isActual) {
       setTimeout(() => {
         this.context.actions.actualize();
         this.called = false;
-      }, 0);
+        // TODO
+        // Wait for all tiles to be rendered before actualizing them
+        // or their initial position will be the actualized one
+      }, 1);
     }
   }
 
@@ -51,6 +54,7 @@ export default class Board extends Component {
       this.called = true;
     }
   }
+
 
   render() {
     const {size} = this.props;
