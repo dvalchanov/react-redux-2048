@@ -29,12 +29,6 @@ export default class Board extends Component {
     _.times(startTiles, () => {
       this.context.actions.newTile();
     });
-
-    setTimeout(() => {
-      //setInterval(() => {
-        //this.context.actions.newTile();
-      //}, 1000);
-    }, 1000);
   }
 
   called: false
