@@ -1,7 +1,7 @@
 export default ({win = false}) => {
   const message = win ?
     "You won. Congratulations!" :
-    "Game over. Try again.";
+    "Game over.";
 
   return (
     <div id="overlay">
