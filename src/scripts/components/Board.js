@@ -38,9 +38,10 @@ export default class Board extends Component {
       setTimeout(() => {
         this.context.actions.actualize();
         this.called = false;
-        // TODO
+        // TODO - check
         // Wait for all tiles to be rendered before actualizing them
         // or their initial position will be the actualized one
+        // WORKING WITH {1] ?
       }, 1);
     }
   }

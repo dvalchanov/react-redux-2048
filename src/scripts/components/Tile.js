@@ -10,24 +10,8 @@ export default class Tile extends Component {
     onTransitionEnd: PropTypes.func.isRequired
   }
 
-  transition: ".1s ease-in-out"
-
-  //componentWillReceiveProps(nextProps) {
-    //const dX = Math.abs(nextProps.x - this.props.x);
-    //const dY = Math.abs(nextProps.y - this.props.y);
-
-    //if (dX) {
-      //this.transition = `.${dX}s ease-in-out`;
-    //}
-
-    //if (dY) {
-      //this.transition = `.${dY}s ease-in-out`;
-    //}
-  //}
-
   componentDidMount() {
     const tile = this.refs.tile;
-    // Transition doesn't happen on DOWN !?!?
     tile.addEventListener("transitionend", this.props.onTransitionEnd, false);
   }
 
@@ -40,17 +24,18 @@ export default class Tile extends Component {
       `cell-${x}-${y}`
     );
 
-    // TODO - On too fast clicking doesn't handle it
-    // Transitions should happen one after another - queue?
+    const isMerged = (value !== 2);
 
     return (
       <ReactCSSTransitionGroup
-        transitionName={value === 2 ? "tile" : "merged"}
+        transitionName={isMerged ? "merged" : "tile"}
         transitionAppear={true}
         transitionEnterTimeout={0}
         transitionLeaveTimeout={0}
-        transitionAppearTimeout={1000} >
-        <div ref="tile" className={cx}>{value}</div>
+        transitionAppearTimeout={0} >
+        <div ref="tile" className={cx}>
+          {value}
+        </div>
       </ReactCSSTransitionGroup>
     );
   }

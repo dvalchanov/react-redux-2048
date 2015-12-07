@@ -10,6 +10,7 @@ body {
  */
 .wrapper {}
 
+// _variables.scss
 $board: #BBADA0;
 $text-dark: #776E65;
 $text-light: #F9F6F2;
@@ -27,6 +28,22 @@ $tile-512: #EDC850;
 $tile-1024: #EAC526;
 $tile-2048: #E4BC00;
 
+$cell-size: 75;
+$cell-padding: 10;
+$board-size: (4 * $cell-size) + (5 * $cell-padding);
+
+// _mixins.scss
+
+$browser-context: 16;
+
+@function em($pixels, $context: $browser-context) {
+  @return #{$pixels/$context}em;
+}
+
+@function px($pixels) {
+  @return #{$pixels}px;
+}
+
 /*
  * Global (Standard usage)
  */
@@ -34,8 +51,8 @@ $tile-2048: #E4BC00;
   @for $row from 0 through 3 {
     @for $column from 0 through 3 {
       .cell-#{$row}-#{$column} {
-        top: #{10 + (60 * $row)}px !important;
-        left: #{10 + (60 * $column)}px !important;
+        top: px(#{$cell-padding + (($cell-size + $cell-padding) * $row)}) !important;
+        left: px(#{$cell-padding + (($cell-size + $cell-padding) * $column)}) !important;
       }
     }
   }
@@ -47,26 +64,29 @@ $tile-2048: #E4BC00;
   .tile-appear.tile-appear-active { transform: scale(1); }
 
   wrapper {
+    margin: 0 auto;
+
     position: relative;
     overflow: hidden;
-    width: 250px;
-    height: 250px;
+    width: px($board-size);
+    height: px($board-size);
     display: block;
     font-family: sans-serif;
 
-    border-radius: 5px;
+    border-radius: px($cell-padding / 2);
     background-color: #BBADA0;
   }
 
   div.tile {
     transition: .1s ease-in-out;
 
-    width: 50px;
-    height: 50px;
     position: absolute;
-    line-height: 50px;
-    border-radius: 5px;
+    width: px($cell-size);
+    height: px($cell-size);
+    line-height: px($cell-size);
+    border-radius: px($cell-padding / 2);
     text-align: center;
+    font-size: em(($cell-size / 50) * 16);
   }
 
   #tiles {
@@ -81,19 +101,19 @@ $tile-2048: #E4BC00;
   #grid {
     display: flex;
     flex-wrap: wrap;
-    padding: 5px;
+    padding: px($cell-padding / 2);
     position: relative;
     z-index: 0;
   }
 
   column {
-    flex: 0 1 50px;
-    line-height: 50px;
-    height: 50px;
-    margin: 5px;
+    flex: 0 1 px($cell-size);
+    line-height: px($cell-size);
+    height: px($cell-size);
+    margin: px($cell-padding / 2);
     color: white;
     text-align: center;
-    border-radius: 5px;
+    border-radius: px($cell-padding / 2);
     background-color: $empty-tile;
   }
 
