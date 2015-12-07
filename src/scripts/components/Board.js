@@ -1,6 +1,7 @@
 import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {Grid, Tile, Overlay} from "./";
+import {List, Map} from "immutable";
 import _ from "lodash";
 
 const startTiles = 2;
@@ -8,7 +9,7 @@ const startTiles = 2;
 @connect(state => {
   return {
     board: state.board,
-    size: state.board.get("size"),
+    dimensions: state.board.get("dimensions"),
     isActual: state.board.get("isActual"),
     win: state.board.get("win"),
     fromSaved: state.board.get("fromSaved")
@@ -16,9 +17,11 @@ const startTiles = 2;
 })
 export default class Board extends Component {
   static propTypes = {
-    size: PropTypes.object.isRequired,
+    board: PropTypes.instanceOf(Map).isRequired,
+    dimensions: PropTypes.instanceOf(List).isRequired,
     isActual: PropTypes.bool.isRequired,
-    win: PropTypes.bool
+    win: PropTypes.bool,
+    fromSaved: PropTypes.bool.isRequired
   }
 
   static contextTypes = {
@@ -70,7 +73,7 @@ export default class Board extends Component {
   }
 
   render() {
-    const {win, size} = this.props;
+    const {win, dimensions} = this.props;
 
     const tiles = this.props.board.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
@@ -89,7 +92,7 @@ export default class Board extends Component {
         <container ref="tiles" id="tiles">
           {tileViews}
         </container>
-        <Grid size={size.toJS()} />
+        <Grid size={dimensions.toJS()} />
       </wrapper>
     );
   }

@@ -83,7 +83,7 @@ if (store.get("game")) {
 defaultState = Map({
   win: null,
   score: 0,
-  size: List.of(4, 4),
+  dimensions: List.of(4, 4),
   cells: generateCells(4, 4),
   //grid: fromJS([
     //[[t2048], [t128], [t8], []],
@@ -92,7 +92,8 @@ defaultState = Map({
     //[[t256], [t16], [t22], []]
   //]),
   grid: generateGrid(4, 4),
-  isActual: true
+  isActual: true,
+  fromSaved: false
 });
 
 initialState = savedState || defaultState;
