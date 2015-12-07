@@ -45,3 +45,11 @@ export function restartGame() {
     });
   };
 }
+
+export function saveGame() {
+  return dispatch => {
+    dispatch({
+      type: actionTypes.SAVE_GAME
+    });
+  };
+}

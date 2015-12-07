@@ -10,12 +10,13 @@ const startTiles = 2;
     board: state.board,
     size: state.board.get("size"),
     isActual: state.board.get("isActual"),
-    win: state.board.get("win")
+    win: state.board.get("win"),
+    fromSaved: state.board.get("fromSaved")
   };
 })
 export default class Board extends Component {
   static propTypes = {
-    size: PropTypes.array.isRequired,
+    size: PropTypes.object.isRequired,
     isActual: PropTypes.bool.isRequired,
     win: PropTypes.bool
   }
@@ -32,9 +33,11 @@ export default class Board extends Component {
       this.context.actions.moveTiles(e.keyCode);
     });
 
-    _.times(startTiles, () => {
-      this.context.actions.newTile();
-    });
+    if (!this.props.fromSaved) {
+      _.times(startTiles, () => {
+        this.context.actions.newTile();
+      });
+    }
   }
 
   called: false
@@ -86,7 +89,7 @@ export default class Board extends Component {
         <container ref="tiles" id="tiles">
           {tileViews}
         </container>
-        <Grid size={size} />
+        <Grid size={size.toJS()} />
       </wrapper>
     );
   }

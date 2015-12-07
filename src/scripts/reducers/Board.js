@@ -1,6 +1,7 @@
-import {Map, List, Range} from "immutable";
+import {Map, List, Range, fromJS} from "immutable";
 import actionTypes from "../actions/actionTypes";
 import {DIRECTIONS, VECTORS, INITIAL} from "../constants";
+import store from "store2";
 import _ from "lodash";
 
 /**
@@ -43,14 +44,7 @@ function generateGrid(height, width) {
 }
 
 // TODO - fix (4, 4);
-const initialState = Map({
-  win: null,
-  score: 0,
-  size: [4, 4],
-  cells: generateCells(4, 4),
-  grid: generateGrid(4, 4),
-  isActual: true
-});
+
 
 /**
  * New Random Tile
@@ -58,6 +52,32 @@ const initialState = Map({
  * newTile.js util/reducer ?
  */
 let id = 0;
+let initialState;
+let savedState;
+let defaultState;
+
+if (store.get("game")) {
+  const tiles = _.flatten(store.get("game").grid, true);
+  const ids = _.pluck(tiles, "id");
+  if (ids.length) {
+    id = _.max(ids) + 1;
+  }
+
+  const game = store.get("game");
+  game.fromSaved = true;
+  savedState = fromJS(game);
+}
+
+defaultState = Map({
+  win: null,
+  score: 0,
+  size: List.of(4, 4),
+  cells: generateCells(4, 4),
+  grid: generateGrid(4, 4),
+  isActual: true
+});
+
+initialState = savedState || defaultState;
 
 /**
  * Get a random number in a certain range.
@@ -69,7 +89,6 @@ let id = 0;
 function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
 
 /**
  * Get a random cell from the list of empty cells.
@@ -351,6 +370,10 @@ function mergeTiles(state) {
   return state.set("cells", cells);
 }
 
+function saveGame(state) {
+  store("game", state.toJS());
+}
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.NEW_TILE:
@@ -366,13 +389,18 @@ export default (state = initialState, action) => {
       return mergeTiles(state);
 
     case actionTypes.RESTART_GAME:
-      state = initialState;
+      store(false);
+      state = defaultState;
       state = newTile(state);
       state = newTile(state);
       return state;
 
     case actionTypes.GAME_OVER:
       state = state.set("win", false);
+      return state;
+
+    case actionTypes.SAVE_GAME:
+      saveGame(state);
       return state;
 
     default:

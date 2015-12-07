@@ -59,8 +59,12 @@ export default class Game extends Component {
     };
   }
 
-  handleClick = () => {
+  handleNewGame = () => {
     this.actions.restartGame();
+  }
+
+  handleSaveGame = () => {
+    this.actions.saveGame();
   }
 
   // TODO - Additional that has all the children - App.js
@@ -73,7 +77,8 @@ export default class Game extends Component {
     return (
       <main className={styles.wrapper}>
         <h3 id="score">Score: {score}</h3>
-        <button onClick={this.handleClick}>New Game</button>
+        <button onClick={this.handleNewGame}>New Game</button>
+        <button onClick={this.handleSaveGame}>Save Game</button>
         {children}
       </main>
     );
