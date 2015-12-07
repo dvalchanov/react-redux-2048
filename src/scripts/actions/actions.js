@@ -37,3 +37,11 @@ export function mergeTiles() {
     });
   };
 }
+
+export function restartGame() {
+  return dispatch => {
+    dispatch({
+      type: actionTypes.RESTART_GAME
+    });
+  };
+}

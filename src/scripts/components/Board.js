@@ -1,6 +1,6 @@
 import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
-import {Grid, Tile} from "./";
+import {Grid, Tile, Overlay} from "./";
 import _ from "lodash";
 
 const startTiles = 2;
@@ -9,12 +9,15 @@ const startTiles = 2;
   return {
     board: state.board,
     size: state.board.get("size"),
-    isActual: state.board.get("isActual")
+    isActual: state.board.get("isActual"),
+    win: state.board.get("win")
   };
 })
 export default class Board extends Component {
   static propTypes = {
-    size: PropTypes.array.isRequired
+    size: PropTypes.array.isRequired,
+    isActual: PropTypes.bool.isRequired,
+    win: PropTypes.bool
   }
 
   static contextTypes = {
@@ -22,6 +25,9 @@ export default class Board extends Component {
   }
 
   componentDidMount() {
+    const tiles = this.refs.tiles;
+    tiles.addEventListener("transitionend", this.onTransitionEnd, false);
+
     document.addEventListener("keyup", (e) => {
       this.context.actions.moveTiles(e.keyCode);
     });
@@ -38,15 +44,19 @@ export default class Board extends Component {
       setTimeout(() => {
         this.context.actions.actualize();
         this.called = false;
-        // TODO - check
+
+        // TODO
+        //
+        // Emit on updated tiles?!
         // Wait for all tiles to be rendered before actualizing them
         // or their initial position will be the actualized one
-        // WORKING WITH {1] ?
-      }, 1);
+        // WORKING WITH {50] ?
+      }, 50);
     }
   }
 
   onTransitionEnd = (e) => {
+    // Don't execute on first transition but on last!!
     // TODO - wait for all transitions to end before creating new one
     if (e.propertyName === "transform") return;
     if (!this.called) {
@@ -56,22 +66,24 @@ export default class Board extends Component {
     }
   }
 
-
   render() {
-    const {size} = this.props;
+    const {win, size} = this.props;
 
     const tiles = this.props.board.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
       return <Tile
                key={tile.get("id")}
-               onTransitionEnd={this.onTransitionEnd}
                {...tile.toJS()}
              />;
     });
 
+    const hasEnded = (win !== null);
+    if (hasEnded) document.removeEventListener("keyup");
+
     return (
       <wrapper>
-        <container id="tiles">
+        {hasEnded && <Overlay win={win} />}
+        <container ref="tiles" id="tiles">
           {tileViews}
         </container>
         <Grid size={size} />

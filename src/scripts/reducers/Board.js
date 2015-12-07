@@ -1,6 +1,6 @@
 import {Map, List, Range} from "immutable";
 import actionTypes from "../actions/actionTypes";
-import {VECTORS, INITIAL} from "../constants";
+import {DIRECTIONS, VECTORS, INITIAL} from "../constants";
 import _ from "lodash";
 
 /**
@@ -44,10 +44,12 @@ function generateGrid(height, width) {
 
 // TODO - fix (4, 4);
 const initialState = Map({
-  isActual: true,
+  win: null,
+  score: 0,
   size: [4, 4],
   cells: generateCells(4, 4),
-  grid: generateGrid(4, 4)
+  grid: generateGrid(4, 4),
+  isActual: true
 });
 
 /**
@@ -252,11 +254,32 @@ function sortTiles(tiles, direction) {
  * @returns {Object}
  */
 function moveTiles(state, direction) {
+  const initial = state;
   let tiles = state.get("grid").flatten(2);
   tiles = sortTiles(tiles, direction);
+
   tiles.forEach((tile) => {
     state = moveTile(state, tile, direction);
   });
+
+  if (initial === state) {
+    let over = true;
+
+    _.each(_.without(_.values(DIRECTIONS), direction), (d) => {
+      tiles = sortTiles(tiles, d);
+      tiles.forEach((tile) => {
+        state = moveTile(state, tile, d);
+      });
+
+      if (initial !== state) over = false;
+    });
+
+    if (over) {
+      state = state.set("win", false);
+    } else {
+      state = initial;
+    }
+  }
 
   return state;
 }
@@ -313,6 +336,12 @@ function mergeTiles(state) {
           id: id++
         });
 
+        if (newValue === 2048) {
+          state = state.set("win", true);
+        }
+
+        state = state.set("score", state.get("score") + newValue);
+
         grid = grid.setIn([x, y], List.of(tile));
       }
     });
@@ -335,6 +364,16 @@ export default (state = initialState, action) => {
 
     case actionTypes.MERGE_TILES:
       return mergeTiles(state);
+
+    case actionTypes.RESTART_GAME:
+      state = initialState;
+      state = newTile(state);
+      state = newTile(state);
+      return state;
+
+    case actionTypes.GAME_OVER:
+      state = state.set("win", false);
+      return state;
 
     default:
       return state;

@@ -36,13 +36,17 @@ import styles from "../../styles/main.scss";
  */
 @connect(state => {
   return {
-    state: state.game
+    score: state.board.get("score")
   };
 })
-export default class App extends Component {
+export default class Game extends Component {
   constructor(props) {
     super(props);
     this.actions = bindActionCreators(Actions, this.props.dispatch);
+  }
+
+  static propTypes = {
+    score: PropTypes.number.isRequired
   }
 
   static childContextTypes = {
@@ -55,12 +59,21 @@ export default class App extends Component {
     };
   }
 
+  handleClick = () => {
+    this.actions.restartGame();
+  }
+
+  // TODO - Additional that has all the children - App.js
+  // TODO - this should be a normal container
   render() {
+    const {score} = this.props;
     const children = this.props.children || [];
     children.push(<Board key="1" />);
 
     return (
       <main className={styles.wrapper}>
+        <h3 id="score">Score: {score}</h3>
+        <button onClick={this.handleClick}>New Game</button>
         {children}
       </main>
     );

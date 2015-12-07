@@ -7,16 +7,11 @@ export default class Tile extends Component {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     value: PropTypes.number.isRequired,
-    onTransitionEnd: PropTypes.func.isRequired
-  }
-
-  componentDidMount() {
-    const tile = this.refs.tile;
-    tile.addEventListener("transitionend", this.props.onTransitionEnd, false);
+    id: PropTypes.number.isRequired
   }
 
   render() {
-    const {x, y, value} = this.props;
+    const {x, y, value, id} = this.props;
 
     const cx = classNames(
       "tile",
@@ -33,7 +28,7 @@ export default class Tile extends Component {
         transitionEnterTimeout={0}
         transitionLeaveTimeout={0}
         transitionAppearTimeout={0} >
-        <div ref="tile" className={cx}>
+        <div className={cx} key={id} ref="tile">
           {value}
         </div>
       </ReactCSSTransitionGroup>

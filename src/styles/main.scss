@@ -63,6 +63,32 @@ $browser-context: 16;
   .tile-appear { transform: scale(0.3); }
   .tile-appear.tile-appear-active { transform: scale(1); }
 
+
+  #overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+
+    background: rgba(234, 197, 38, 0.5);
+  }
+
+  #score {
+    text-align: center;
+    font-family: sans-serif;
+  }
+
+  main {
+    text-align: center;
+  }
+
+  button {
+    width: 100px;
+    margin: 10px 0;
+  }
+
   wrapper {
     margin: 0 auto;
 
@@ -78,7 +104,7 @@ $browser-context: 16;
   }
 
   div.tile {
-    transition: .1s ease-in-out;
+    transition: all .1s ease-in-out;
 
     position: absolute;
     width: px($cell-size);
