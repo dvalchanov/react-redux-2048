@@ -2,9 +2,11 @@ import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {Grid, Tile, Overlay} from "./";
 import {List, Map} from "immutable";
+import {DIRECTIONS, UP, LEFT, DOWN, RIGHT} from "../constants";
 import _ from "lodash";
 
 const startTiles = 2;
+const initialTouch = {x: 0, y: 0};
 
 @connect(state => {
   return {
@@ -30,17 +32,64 @@ export default class Board extends Component {
 
   componentDidMount() {
     const tiles = this.refs.tiles;
-    tiles.addEventListener("transitionend", this.onTransitionEnd, false);
+    const board = this.refs.board;
 
-    document.addEventListener("keyup", (e) => {
-      this.context.actions.moveTiles(e.keyCode);
-    });
+    document.addEventListener("keyup", this.handleKeyUp, false);
+    tiles.addEventListener("transitionend", this.onTransitionEnd, false);
+    board.addEventListener("touchstart", this.handleTouchStart, false);
+    board.addEventListener("touchend", this.handleTouchEnd, false);
 
     if (!this.props.fromSaved) {
       _.times(startTiles, () => {
         this.context.actions.newTile();
       });
     }
+  }
+
+  handleKeyUp = (e) => {
+    const direction = DIRECTIONS[e.keyCode];
+
+    if (typeof direction !== "undefined") {
+      this.context.actions.moveTiles(direction);
+    }
+  }
+
+  touch: initialTouch
+
+  getTouches(touches) {
+    return {
+      x: touches[0].clientX,
+      y: touches[0].clientY
+    };
+  }
+
+  handleTouchStart = (e) => {
+    this.touch = this.getTouches(e.touches);
+  }
+
+  handleTouchEnd = (e) => {
+    if (!this.touch.x || !this.touch.y) return;
+
+    const {x, y} = this.getTouches(e.changedTouches);
+
+    const dX = this.touch.x - x;
+    const dY = this.touch.y - y;
+
+    if (Math.abs(dX) > Math.abs(dY)) {
+      if (dX > 0) {
+        this.context.actions.moveTiles(LEFT);
+      } else {
+        this.context.actions.moveTiles(RIGHT);
+      }
+    } else {
+      if (dY > 0) {
+        this.context.actions.moveTiles(UP);
+      } else {
+        this.context.actions.moveTiles(DOWN);
+      }
+    }
+
+    this.touch = initialTouch;
   }
 
   called: false
@@ -87,7 +136,7 @@ export default class Board extends Component {
     if (hasEnded) document.removeEventListener("keyup");
 
     return (
-      <wrapper>
+      <wrapper ref="board">
         {hasEnded && <Overlay win={win} />}
         <container ref="tiles" id="tiles">
           {tileViews}

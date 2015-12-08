@@ -1,5 +1,4 @@
 import actionTypes from "./actionTypes";
-import {DIRECTIONS} from "../constants";
 
 export function newTile() {
   return dispatch => {
@@ -9,16 +8,12 @@ export function newTile() {
   };
 }
 
-export function moveTiles(keyCode) {
+export function moveTiles(direction) {
   return dispatch => {
-    const direction = DIRECTIONS[keyCode];
-
-    if (typeof direction !== "undefined") {
-      dispatch({
-        type: actionTypes.MOVE_TILES,
-        direction
-      });
-    }
+    dispatch({
+      type: actionTypes.MOVE_TILES,
+      direction
+    });
   };
 }
 
