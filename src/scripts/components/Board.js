@@ -3,7 +3,10 @@ import {connect} from "react-redux";
 import {Grid, Tile, Overlay} from "./";
 import {List, Map} from "immutable";
 import {DIRECTIONS, UP, LEFT, DOWN, RIGHT} from "../constants";
+import classNames from "classnames";
 import _ from "lodash";
+
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 const startTiles = 2;
 const initialTouch = {x: 0, y: 0};
@@ -124,8 +127,14 @@ export default class Board extends Component {
   render() {
     const {win, dimensions} = this.props;
 
+    const merged = [];
+
     const tiles = this.props.board.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
+      if (tile.get("merged")) {
+        merged.push(tile);
+      }
+
       return <Tile
                key={tile.get("id")}
                {...tile.toJS()}
@@ -135,8 +144,28 @@ export default class Board extends Component {
     const hasEnded = (win !== null);
     if (hasEnded) document.removeEventListener("keyup");
 
+    const mergeViews = _.map(merged, tile => {
+      const cx = classNames(
+        "result",
+        `cell-${tile.get("x")}-${tile.get("y")}`
+      );
+
+      return (
+        <ReactCSSTransitionGroup
+          key={tile.get("id")}
+          transitionName="result"
+          transitionAppear={true}
+          transitionEnterTimeout={0}
+          transitionLeaveTimeout={0}
+          transitionAppearTimeout={0} >
+          <div className={cx}>+{tile.get("value")}</div>
+        </ReactCSSTransitionGroup>
+      );
+    });
+
     return (
       <wrapper ref="board">
+        {mergeViews}
         {hasEnded && <Overlay win={win} />}
         <container ref="tiles" id="tiles">
           {tileViews}

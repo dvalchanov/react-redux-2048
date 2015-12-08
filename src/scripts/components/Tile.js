@@ -7,11 +7,25 @@ export default class Tile extends Component {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     value: PropTypes.number.isRequired,
-    id: PropTypes.number.isRequired
+    id: PropTypes.number.isRequired,
+    merged: PropTypes.bool.isRequired
+  }
+
+  static contextTypes = {
+    actions: PropTypes.object.isRequired
+  }
+
+  componentDidMount() {
+    if (this.props.merged) {
+      setTimeout(() => {
+        this.context.actions.merged(this.props.id);
+        // Do this on transition end!!
+      }, 500);
+    }
   }
 
   render() {
-    const {x, y, value, id} = this.props;
+    const {x, y, value, id, merged} = this.props;
 
     const cx = classNames(
       "tile",
@@ -19,11 +33,9 @@ export default class Tile extends Component {
       `cell-${x}-${y}`
     );
 
-    const isMerged = (value !== 2);
-
     return (
       <ReactCSSTransitionGroup
-        transitionName={isMerged ? "merged" : "tile"}
+        transitionName={merged ? "merged" : "tile"}
         transitionAppear={true}
         transitionEnterTimeout={0}
         transitionLeaveTimeout={0}

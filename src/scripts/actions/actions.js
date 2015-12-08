@@ -1,5 +1,14 @@
 import actionTypes from "./actionTypes";
 
+export function merged(id) {
+  return dispatch => {
+    dispatch({
+      type: actionTypes.MERGED,
+      id
+    });
+  };
+}
+
 export function newTile() {
   return dispatch => {
     dispatch({

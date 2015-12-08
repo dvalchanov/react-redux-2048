@@ -7,7 +7,8 @@ const actions = [
   "MERGE_TILES",
   "RESTART_GAME",
   "GAME_OVER",
-  "SAVE_GAME"
+  "SAVE_GAME",
+  "MERGED"
 ];
 
 export default generateActions(actions);

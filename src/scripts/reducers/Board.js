@@ -131,7 +131,8 @@ function addTile(state, tile) {
   return state.updateIn(["grid", tile.get("x"), tile.get("y")], cell => {
     return cell.push(tile.merge({
       id: id++,
-      value: INITIAL
+      value: INITIAL,
+      merged: false
     }));
   });
 }
@@ -371,7 +372,8 @@ function mergeTiles(state) {
 
         const tile = cell.first().merge({
           value: newValue,
-          id: id++
+          id: id++,
+          merged: true
         });
 
         if (newValue === 2048) {
@@ -387,6 +389,16 @@ function mergeTiles(state) {
 
   state = state.set("grid", grid);
   return state.set("cells", cells);
+}
+
+function setMerged(state, idd) {
+  const tiles = state.get("grid").flatten(2);
+  const t = tiles.find(tile => {
+    return tile.get("id") === idd;
+  });
+
+  state = state.setIn(["grid", t.get("x"), t.get("y"), 0, "merged"], false);
+  return state;
 }
 
 function saveGame(state) {
@@ -421,6 +433,9 @@ export default (state = initialState, action) => {
     case actionTypes.SAVE_GAME:
       saveGame(state);
       return state;
+
+    case actionTypes.MERGED:
+      return setMerged(state, action.id);
 
     default:
       return state;

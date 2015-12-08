@@ -39,6 +39,10 @@ body {
   .tile-appear { transform: scale(0.3); }
   .tile-appear.tile-appear-active { transform: scale(1); }
 
+  .result-appear { transform: translateY(-10px); opacity: 1; }
+  .result-appear.result-appear-active { transform: translateY(-50px); opacity: 0; }
+
+
   #overlay {
     position: absolute;
     box-sizing: border-box;
@@ -98,6 +102,17 @@ body {
 
     border-radius: px($cell-padding / 2);
     background-color: $board;
+  }
+
+  .result {
+    transition: all .5s ease-in-out;
+
+    position: absolute;
+    width: px($cell-size);
+    height: px($cell-size);
+    z-index: 100;
+    line-height: px($cell-size);
+    color: white;
   }
 
   div.tile {
