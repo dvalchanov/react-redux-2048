@@ -127,11 +127,11 @@ function randomCell(state) {
  * @param {Object} tile
  * @returns {Object}
  */
-function addTile(state, tile) {
+function addTile(state, tile, value) {
   return state.updateIn(["grid", tile.get("x"), tile.get("y")], cell => {
     return cell.push(tile.merge({
       id: id++,
-      value: INITIAL,
+      value: value || INITIAL,
       merged: false
     }));
   });
@@ -150,7 +150,16 @@ function newTile(state) {
   const cell = randomCell(state);
   const tile = state.getIn(["cells", cell]);
 
-  state = addTile(state, tile);
+  if (id === 0 || id === 1) {
+    state = addTile(state, tile);
+  } else {
+    if (randomNumber(0, 20) === 13) {
+      state = addTile(state, tile, "?");
+    } else {
+      state = addTile(state, tile);
+    }
+  }
+
   state = state.removeIn(["cells", cell]);
 
   return state;
@@ -203,9 +212,13 @@ function getCurrent(direction) {
  * @returns {Boolean}
  */
 function isSuitable(cell, tile) {
+  const t1 = cell.getIn([0, "value"]);
+  const t2 = tile.get("value");
+
   if (cell.size > 1) return false;
-  if (cell.size && cell.getIn([0, "value"]) !== tile.get("value")) {
-    return false;
+  if (cell.size) {
+    if (t1 === "?" || t2 === "?") return true;
+    if (t1 !== t2) return false;
   }
 
   return true;
@@ -233,6 +246,18 @@ function findAvailableCell(state, tile, direction) {
     );
 
     const cell = state.getIn(path);
+
+    if (tile.get("value") === "?") {
+      if (!isSuitable(cell, tile)) {
+        available = null;
+      } else {
+        if (cell.size === 1) available = path;
+        if (!cell.size && !available) {
+          available = path;
+        }
+      }
+      return;
+    }
 
     if (!isSuitable(cell, tile)) {
       available = null;
@@ -367,6 +392,14 @@ function mergeTiles(state) {
 
       if (cell.size > 1) {
         const newValue = cell.reduce((t1, t2) => {
+          if (t1.get("value") === "?") {
+            return t2.get("value") + t2.get("value");
+          }
+
+          if (t2.get("value") === "?") {
+            return t1.get("value") + t1.get("value");
+          }
+
           return t1.get("value") + t2.get("value");
         });
 

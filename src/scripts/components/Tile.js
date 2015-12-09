@@ -6,7 +6,10 @@ export default class Tile extends Component {
   static propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
+    value: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]).isRequired,
     id: PropTypes.number.isRequired,
     merged: PropTypes.bool.isRequired
   }
@@ -29,7 +32,7 @@ export default class Tile extends Component {
 
     const cx = classNames(
       "tile",
-      `tile-${value}`,
+      `tile-${value !== "?" ? value : "x"}`,
       `cell-${x}-${y}`
     );
 

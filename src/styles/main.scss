@@ -155,6 +155,7 @@ body {
     background-color: $empty-tile;
   }
 
+  .tile-x { background-color: $tile-x; color: $text-light; }
   .tile-0 { background-color: $empty-tile; }
   .tile-2 { background-color: $tile-2; color: $text-dark; }
   .tile-4 { background-color: $tile-4; color: $text-dark; }
