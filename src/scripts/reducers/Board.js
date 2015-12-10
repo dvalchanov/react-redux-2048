@@ -43,8 +43,6 @@ function generateGrid(height, width) {
   return cells;
 }
 
-// TODO - fix (4, 4);
-
 
 /**
  * New Random Tile
@@ -82,6 +80,7 @@ initialState = savedState || defaultState;
 
 /**
  * Get a random number in a certain range.
+ * TODO - in util
  *
  * @param {Number} min
  * @param {Number} max
@@ -90,6 +89,25 @@ initialState = savedState || defaultState;
 function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+/**
+ * Set lucky chance to pick a x-tile.
+ *
+ * @param {Number} percentage
+ * @returns {Function}
+ */
+function setLucky(percentage) {
+  const min = 1;
+  const max = Math.round(100 / percentage);
+  const luckyNumber = randomNumber(min, max);
+
+  return () => {
+    if (randomNumber(min, max) === luckyNumber) return true;
+    return false;
+  };
+}
+
+const isLucky = setLucky(2);
 
 /**
  * Get a random cell from the list of empty cells.
@@ -119,6 +137,7 @@ function addTile(state, tile, value) {
   });
 }
 
+
 /**
  * Creates a new random tile in the grid by taking it from the list of
  * available empty tiles.
@@ -132,10 +151,11 @@ function newTile(state) {
   const cell = randomCell(state);
   const tile = state.getIn(["cells", cell]);
 
+  // TODO - Fix
   if (id === 0 || id === 1) {
     state = addTile(state, tile);
   } else {
-    if (randomNumber(0, 50) === 13) {
+    if (isLucky()) {
       state = addTile(state, tile, "x");
     } else {
       state = addTile(state, tile);
@@ -146,11 +166,6 @@ function newTile(state) {
 
   return state;
 }
-
-
-/**
- * Slide tiles
- */
 
 /**
  * Get a certain direction vectors.
