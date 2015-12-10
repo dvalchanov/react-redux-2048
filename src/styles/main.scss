@@ -155,7 +155,22 @@ body {
     background-color: $empty-tile;
   }
 
-  .tile-x { background-color: $tile-x; color: $text-light; }
+  .tile-x {
+    background-color: $tile-x;
+    color: $text-light;
+    text-indent: -9999px;
+
+    &:after {
+      @include center();
+      content: "";
+
+      width: 32px;
+      height: 32px;
+      background: url("../images/gift.svg");
+      background-size: 32px 32px;
+    }
+  }
+
   .tile-0 { background-color: $empty-tile; }
   .tile-2 { background-color: $tile-2; color: $text-dark; }
   .tile-4 { background-color: $tile-4; color: $text-dark; }

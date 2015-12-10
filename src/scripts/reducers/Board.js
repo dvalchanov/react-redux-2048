@@ -68,29 +68,11 @@ if (store.get("game")) {
   savedState = fromJS(game);
 }
 
-//const t2048 = {x: 0, y: 0, value: 2048, id: 0};
-//const t1024 = {x: 1, y: 0, value: 1024, id: 1};
-//const t512 = {x: 2, y: 0, value: 512, id: 2};
-//const t256 = {x: 3, y: 0, value: 256, id: 3};
-//const t128 = {x: 0, y: 1, value: 128, id: 4};
-//const t64 = {x: 1, y: 1, value: 64, id: 5};
-//const t32 = {x: 2, y: 1, value: 32, id: 6};
-//const t16 = {x: 3, y: 1, value: 16, id: 7};
-//const t8 = {x: 0, y: 2, value: 8, id: 8};
-//const t4 = {x: 1, y: 2, value: 4, id: 9};
-//const t22 = {x: 2, y: 2, value: 2, id: 10};
-
 defaultState = Map({
   win: null,
   score: 0,
   dimensions: List.of(4, 4),
   cells: generateCells(4, 4),
-  //grid: fromJS([
-    //[[t2048], [t128], [t8], []],
-    //[[t1024], [t64], [t4], []],
-    //[[t512], [t32], [t22], [t22]],
-    //[[t256], [t16], [t22], []]
-  //]),
   grid: generateGrid(4, 4),
   isActual: true,
   fromSaved: false
@@ -153,8 +135,8 @@ function newTile(state) {
   if (id === 0 || id === 1) {
     state = addTile(state, tile);
   } else {
-    if (randomNumber(0, 20) === 13) {
-      state = addTile(state, tile, "?");
+    if (randomNumber(0, 50) === 13) {
+      state = addTile(state, tile, "x");
     } else {
       state = addTile(state, tile);
     }
@@ -217,7 +199,7 @@ function isSuitable(cell, tile) {
 
   if (cell.size > 1) return false;
   if (cell.size) {
-    if (t1 === "?" || t2 === "?") return true;
+    if (t1 === "x" || t2 === "x") return true;
     if (t1 !== t2) return false;
   }
 
@@ -247,7 +229,7 @@ function findAvailableCell(state, tile, direction) {
 
     const cell = state.getIn(path);
 
-    if (tile.get("value") === "?") {
+    if (tile.get("value") === "x") {
       if (!isSuitable(cell, tile)) {
         available = null;
       } else {
@@ -392,11 +374,11 @@ function mergeTiles(state) {
 
       if (cell.size > 1) {
         const newValue = cell.reduce((t1, t2) => {
-          if (t1.get("value") === "?") {
+          if (t1.get("value") === "x") {
             return t2.get("value") + t2.get("value");
           }
 
-          if (t2.get("value") === "?") {
+          if (t2.get("value") === "x") {
             return t1.get("value") + t1.get("value");
           }
 

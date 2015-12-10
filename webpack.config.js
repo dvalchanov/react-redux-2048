@@ -140,7 +140,7 @@ var config = {
        */
       {
         test: /\.(png|gif|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "file-loader?hash=sha512&digest=hex&name=assets/[hash].[ext]"
+        loader: "file-loader?hash=sha512&digest=hex&name=assets/[name].[ext]"
       },
 
       /**

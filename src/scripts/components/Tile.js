@@ -32,7 +32,7 @@ export default class Tile extends Component {
 
     const cx = classNames(
       "tile",
-      `tile-${value !== "?" ? value : "x"}`,
+      `tile-${value}`,
       `cell-${x}-${y}`
     );
 
