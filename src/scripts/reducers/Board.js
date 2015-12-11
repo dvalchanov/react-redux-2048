@@ -253,6 +253,11 @@ function sortTiles(tiles, direction) {
   return tiles;
 }
 
+function moveTiles(state, tiles, direction) {
+  tiles.forEach(tile => state = moveTile(state, tile, direction));
+  return state;
+}
+
 /**
  * Move the tile objects to their new cells positions, without changing
  * their canvas position yet.
@@ -261,37 +266,39 @@ function sortTiles(tiles, direction) {
  * @param {Object] direction
  * @returns {Object}
  */
-function moveTiles(state, direction) {
+function prepareTiles(state, direction) {
   const initial = state;
   let tiles = state.get("grid").flatten(2);
-  tiles = sortTiles(tiles, direction);
 
-  tiles.forEach((tile) => {
-    state = moveTile(state, tile, direction);
-  });
+  tiles = sortTiles(tiles, direction);
+  state = moveTiles(state, tiles, direction);
 
   // TODO - fix
   if (initial === state) {
-    let over = true;
+    let gameOver = true;
+    const rest = _.without(_.values(DIRECTIONS), direction);
 
-    _.each(_.without(_.values(DIRECTIONS), direction), (d) => {
+    _.each(rest, (d) => {
       tiles = sortTiles(tiles, d);
-      tiles.forEach((tile) => {
-        state = moveTile(state, tile, d);
-      });
+      state = moveTiles(state, tiles, d);
 
-      if (initial !== state) over = false;
+      if (initial !== state) gameOver = false;
     });
 
-    if (over) {
-      state = state.set("win", false);
-    } else {
-      state = initial;
-    }
+    state = gameOver ? state.set("win", false) : initial;
   }
 
   return state;
 }
+
+//function prepareTiles(state, direction) {
+  //const initial = state;
+  //let tiles = state.get("grid").flatten(2);
+  //tiles = sortTiles(tiles, direction);
+
+  //return moveTiles(state, tiles, direction);
+//}
+
 
 /**
  * ACTUALIZE
@@ -383,7 +390,7 @@ export default (state = initialState, action) => {
       return newTile(state);
 
     case actionTypes.MOVE_TILES:
-      return moveTiles(state, action.direction);
+      return prepareTiles(state, action.direction);
 
     case actionTypes.ACTUALIZE:
       return actualize(state);
