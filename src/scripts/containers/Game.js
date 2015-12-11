@@ -1,7 +1,7 @@
 import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {Board} from "../components";
+import {Board, Result} from "../components";
 import * as Actions from "../actions/actions";
 
 /**
@@ -36,7 +36,8 @@ import styles from "../../styles/main.scss";
  */
 @connect(state => {
   return {
-    score: state.board.get("score")
+    score: state.board.get("score"),
+    result: state.board.get("result")
   };
 })
 export default class Game extends Component {
@@ -46,7 +47,8 @@ export default class Game extends Component {
   }
 
   static propTypes = {
-    score: PropTypes.number.isRequired
+    score: PropTypes.number.isRequired,
+    result: PropTypes.number
   }
 
   static childContextTypes = {
@@ -70,13 +72,20 @@ export default class Game extends Component {
   // TODO - Additional that has all the children - App.js
   // TODO - this should be a normal container
   render() {
-    const {score} = this.props;
+    const {score, result} = this.props;
     const children = this.props.children || [];
     children.push(<Board key="1" />);
 
+    // TODO - in component
+    let resultView;
+    if (result) resultView = <Result result={result}/>;
+
     return (
       <main className={styles.wrapper}>
-        <h3 id="score">Score: {score}</h3>
+        <div id="score">
+          {resultView}
+          <h3>Score: {score}</h3>
+        </div>
         <button onClick={this.handleNewGame}>New Game</button>
         <button onClick={this.handleSaveGame}>Save Game</button>
         {children}

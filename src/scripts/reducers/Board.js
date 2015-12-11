@@ -78,6 +78,7 @@ defaultState = Map({
 
 initialState = savedState || defaultState;
 
+
 /**
  * Get a random cell from the list of empty cells.
  *
@@ -106,7 +107,6 @@ function addTile(state, tile, value) {
   });
 }
 
-
 /**
  * Creates a new random tile in the grid by taking it from the list of
  * available empty tiles.
@@ -120,16 +120,8 @@ function newTile(state) {
   const cell = randomCell(state);
   const tile = state.getIn(["cells", cell]);
 
-  // TODO - Fix
-  if (id === 0 || id === 1) {
-    state = addTile(state, tile);
-  } else {
-    if (isLucky()) {
-      state = addTile(state, tile, "x");
-    } else {
-      state = addTile(state, tile);
-    }
-  }
+  if (id > 1 && isLucky()) state = addTile(state, tile, "x");
+  else state = addTile(state, tile);
 
   state = state.removeIn(["cells", cell]);
 
@@ -345,6 +337,7 @@ function actualize(state) {
 function mergeTiles(state) {
   let cells = List();
   let grid = state.get("grid");
+  let result = 0;
 
   grid.forEach((row, x) => {
     row.forEach((cell, y) => {
@@ -375,6 +368,8 @@ function mergeTiles(state) {
           state = state.set("win", true);
         }
 
+        result += newValue;
+
         state = state.set("score", state.get("score") + newValue);
 
         grid = grid.setIn([x, y], List.of(tile));
@@ -382,18 +377,9 @@ function mergeTiles(state) {
     });
   });
 
+  state = state.set("result", result);
   state = state.set("grid", grid);
   return state.set("cells", cells);
-}
-
-function setMerged(state, idd) {
-  const tiles = state.get("grid").flatten(2);
-  const t = tiles.find(tile => {
-    return tile.get("id") === idd;
-  });
-
-  state = state.setIn(["grid", t.get("x"), t.get("y"), 0, "merged"], false);
-  return state;
 }
 
 function saveGame(state) {
@@ -429,8 +415,9 @@ export default (state = initialState, action) => {
       saveGame(state);
       return state;
 
-    case actionTypes.MERGED:
-      return setMerged(state, action.id);
+    case actionTypes.RESET_RESULT:
+      state = state.set("result", 0);
+      return state;
 
     default:
       return state;

@@ -57,3 +57,11 @@ export function saveGame() {
     });
   };
 }
+
+export function resetResult() {
+  return dispatch => {
+    dispatch({
+      type: actionTypes.RESET_RESULT
+    });
+  };
+}

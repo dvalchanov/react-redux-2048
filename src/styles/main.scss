@@ -42,7 +42,6 @@ body {
   .result-appear { transform: translateY(-10px); opacity: 1; }
   .result-appear.result-appear-active { transform: translateY(-50px); opacity: 0; }
 
-
   #overlay {
     position: absolute;
     box-sizing: border-box;
@@ -63,10 +62,29 @@ body {
   }
 
   #score {
-    text-align: center;
-    font-family: sans-serif;
-    font-size: em(24);
-    line-height: 40px;
+    width: 300px;
+    margin: 0 auto;
+    position: relative;
+
+    .result {
+      transition: all .5s ease-in-out;
+
+      top: 0;
+      left: 50%;
+      margin-left: -25px;
+      position: absolute;
+      width: 50px;
+      text-align: center;
+      z-index: 100;
+      color: black;
+    }
+
+    h3 {
+      text-align: center;
+      font-family: sans-serif;
+      font-size: em(24);
+      line-height: 40px;
+    }
   }
 
   main {
@@ -104,16 +122,6 @@ body {
     background-color: $board;
   }
 
-  .result {
-    transition: all .5s ease-in-out;
-
-    position: absolute;
-    width: px($cell-size);
-    height: px($cell-size);
-    z-index: 100;
-    line-height: px($cell-size);
-    color: white;
-  }
 
   div.tile {
     transition: all .1s ease-in-out;
