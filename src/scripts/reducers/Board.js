@@ -1,6 +1,7 @@
 import {Map, List, Range, fromJS} from "immutable";
 import actionTypes from "../actions/actionTypes";
 import {DIRECTIONS, VECTORS, INITIAL} from "../constants";
+import {randomNumber, isLucky} from "../utils/math";
 import store from "store2";
 import _ from "lodash";
 
@@ -43,7 +44,6 @@ function generateGrid(height, width) {
   return cells;
 }
 
-
 /**
  * New Random Tile
  *
@@ -77,37 +77,6 @@ defaultState = Map({
 });
 
 initialState = savedState || defaultState;
-
-/**
- * Get a random number in a certain range.
- * TODO - in util
- *
- * @param {Number} min
- * @param {Number} max
- * @returns {Number}
- */
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-/**
- * Set lucky chance to pick a x-tile.
- *
- * @param {Number} percentage
- * @returns {Function}
- */
-function setLucky(percentage) {
-  const min = 1;
-  const max = Math.round(100 / percentage);
-  const luckyNumber = randomNumber(min, max);
-
-  return () => {
-    if (randomNumber(min, max) === luckyNumber) return true;
-    return false;
-  };
-}
-
-const isLucky = setLucky(2);
 
 /**
  * Get a random cell from the list of empty cells.
@@ -283,10 +252,6 @@ function moveTile(state, tile, direction) {
     state = state.updateIn(["grid", tile.get("x"), tile.get("y")], arr => {
       return arr.pop();
     });
-
-    // Set the class in animation frame?! original 2048
-    //window.requestAnimationFrame(function() {
-    //});
   }
 
   return state;
