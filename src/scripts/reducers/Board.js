@@ -73,7 +73,8 @@ defaultState = Map({
   cells: generateCells(4, 4),
   grid: generateGrid(4, 4),
   isActual: true,
-  fromSaved: false
+  fromSaved: false,
+  moved: false
 });
 
 initialState = savedState || defaultState;
@@ -267,7 +268,7 @@ function moveTiles(state, tiles, direction) {
  * @returns {Object}
  */
 function prepareTiles(state, direction) {
-  const initial = state;
+  let initial = state;
   let tiles = state.get("grid").flatten(2);
 
   tiles = sortTiles(tiles, direction);
@@ -275,6 +276,8 @@ function prepareTiles(state, direction) {
 
   // TODO - fix
   if (initial === state) {
+    initial = initial.set("moved", true);
+
     let gameOver = true;
     const rest = _.without(_.values(DIRECTIONS), direction);
 
@@ -287,6 +290,7 @@ function prepareTiles(state, direction) {
 
     state = gameOver ? state.set("win", false) : initial;
   }
+
 
   return state;
 }
@@ -375,6 +379,7 @@ function mergeTiles(state) {
     });
   });
 
+  state = state.set("moved", false);
   state = state.set("result", result);
   state = state.set("grid", grid);
   return state.set("cells", cells);

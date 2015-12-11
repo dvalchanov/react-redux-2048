@@ -14,7 +14,8 @@ const initialTouch = {x: 0, y: 0};
     dimensions: state.board.get("dimensions"),
     isActual: state.board.get("isActual"),
     win: state.board.get("win"),
-    fromSaved: state.board.get("fromSaved")
+    fromSaved: state.board.get("fromSaved"),
+    moved: state.board.get("moved")
   };
 })
 export default class Board extends Component {
@@ -23,7 +24,8 @@ export default class Board extends Component {
     dimensions: PropTypes.instanceOf(List).isRequired,
     isActual: PropTypes.bool.isRequired,
     win: PropTypes.bool,
-    fromSaved: PropTypes.bool.isRequired
+    fromSaved: PropTypes.bool.isRequired,
+    moved: PropTypes.bool.isRequired
   }
 
   static contextTypes = {
@@ -50,7 +52,8 @@ export default class Board extends Component {
     const direction = DIRECTIONS[e.keyCode];
 
     if (typeof direction !== "undefined") {
-      this.context.actions.moveTiles(direction);
+      this.queue.push(direction);
+      this.execute(true);
     }
   }
 
@@ -92,6 +95,8 @@ export default class Board extends Component {
     this.touch = initialTouch;
   }
 
+  // Implement setState for something?
+
   called: false
 
   componentDidUpdate(prevProps) {
@@ -105,8 +110,45 @@ export default class Board extends Component {
         // Emit on updated tiles?!
         // Wait for all tiles to be rendered before actualizing them
         // or their initial position will be the actualized one
-        // WORKING WITH {50] ?
+        // WORKING WITH {50} ?
       }, 50);
+    } else {
+      if (this.props.moved) {
+        this.called = true;
+        this.queue.shift();
+        this.resolve();
+      }
+    }
+  }
+
+  queue = []
+  resolve = null
+
+  moveTiles(direction) {
+    return new Promise((resolve) => {
+      this.resolve = resolve;
+      this.context.actions.moveTiles(direction);
+    });
+  }
+
+  execute = async function initialExecute() {
+    if (this.queue.length <= 1) {
+      await this.moveTiles(this.queue[0]);
+
+      if (this.queue.length) {
+        this.execute();
+      }
+    } else {
+      this.execute = async (initial) => {
+        if (initial) return;
+
+        if (this.queue.length) {
+          await this.moveTiles(this.queue[0]);
+          this.execute();
+        } else {
+          this.execute = initialExecute;
+        }
+      };
     }
   }
 
@@ -118,6 +160,9 @@ export default class Board extends Component {
       this.context.actions.mergeTiles();
       this.context.actions.newTile();
       this.called = true;
+
+      this.queue.shift();
+      this.resolve();
     }
   }
 
