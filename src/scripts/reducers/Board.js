@@ -122,9 +122,7 @@ function newTile(state) {
   if (id > 1 && isLucky()) state = addTile(state, tile, "x");
   else state = addTile(state, tile);
 
-  state = state.removeIn(["cells", cell]);
-
-  return state;
+  return state.removeIn(["cells", cell]);
 }
 
 
@@ -205,22 +203,14 @@ function findAvailableCell(state, tile, direction) {
 
     const cell = state.getIn(path);
 
-    if (tile.get("value") === "x") {
-      if (!isSuitable(cell, tile)) {
-        available = null;
-      } else {
-        if (cell.size === 1) available = path;
-        if (!cell.size && !available) {
-          available = path;
-        }
-      }
-      return;
-    }
-
     if (!isSuitable(cell, tile)) {
       available = null;
     } else {
-      available = available || path;
+      if (tile.get("value") === "x") {
+        if (cell.size === 1 || (!cell.size && !available)) available = path;
+      } else {
+        available = available || path;
+      }
     }
   });
 
@@ -280,6 +270,7 @@ function moveTiles(state, direction) {
     state = moveTile(state, tile, direction);
   });
 
+  // TODO - fix
   if (initial === state) {
     let over = true;
 
