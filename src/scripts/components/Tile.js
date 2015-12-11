@@ -11,7 +11,7 @@ export default class Tile extends Component {
       PropTypes.string
     ]).isRequired,
     id: PropTypes.number.isRequired,
-    merged: PropTypes.bool.isRequired
+    fromSaved: PropTypes.bool.isRequired
   }
 
   static contextTypes = {
@@ -28,13 +28,17 @@ export default class Tile extends Component {
   }
 
   render() {
-    const {x, y, value, id, merged} = this.props;
+    const {x, y, value, id, fromSaved} = this.props;
 
     const cx = classNames(
       "tile",
       `tile-${value}`,
       `cell-${x}-${y}`
     );
+
+    let merged;
+    if (fromSaved) merged = false;
+    else merged = value !== 2;
 
     return (
       <ReactCSSTransitionGroup

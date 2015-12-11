@@ -76,7 +76,6 @@ export default class Game extends Component {
     const children = this.props.children || [];
     children.push(<Board key="1" />);
 
-    // TODO - in component
     let resultView;
     if (result) resultView = <Result result={result}/>;
 

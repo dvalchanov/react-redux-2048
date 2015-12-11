@@ -322,6 +322,7 @@ function actualize(state) {
     });
   });
 
+  state = state.set("fromSaved", false);
   state = state.set("isActual", true);
 
   return state.set("grid", grid);

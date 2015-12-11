@@ -122,11 +122,12 @@ export default class Board extends Component {
   }
 
   render() {
-    const {win, dimensions} = this.props;
+    const {win, dimensions, fromSaved} = this.props;
 
     const tiles = this.props.board.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
       return <Tile
+               fromSaved={fromSaved}
                key={tile.get("id")}
                {...tile.toJS()}
              />;
