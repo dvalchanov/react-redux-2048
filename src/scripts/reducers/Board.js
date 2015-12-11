@@ -101,8 +101,7 @@ function addTile(state, tile, value) {
   return state.updateIn(["grid", tile.get("x"), tile.get("y")], cell => {
     return cell.push(tile.merge({
       id: id++,
-      value: value || INITIAL,
-      merged: false
+      value: value || INITIAL
     }));
   });
 }
@@ -127,6 +126,7 @@ function newTile(state) {
 
   return state;
 }
+
 
 /**
  * Get a certain direction vectors.
@@ -361,8 +361,7 @@ function mergeTiles(state) {
 
         const tile = cell.first().merge({
           value: newValue,
-          id: id++,
-          merged: true
+          id: id++
         });
 
         if (newValue === 2048) {
