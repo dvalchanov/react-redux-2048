@@ -95,8 +95,6 @@ export default class Board extends Component {
     this.touch = initialTouch;
   }
 
-  // Implement setState for something?
-
   called: false
 
   componentDidUpdate(prevProps) {
@@ -117,6 +115,8 @@ export default class Board extends Component {
         this.called = true;
         this.queue.shift();
         this.resolve();
+
+        this.context.actions.setMoved(false);
       }
     }
   }

@@ -423,6 +423,10 @@ export default (state = initialState, action) => {
       state = state.set("result", 0);
       return state;
 
+    case actionTypes.SET_MOVED:
+      return state.set("moved", action.moved);
+
+
     default:
       return state;
   }

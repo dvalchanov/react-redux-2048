@@ -9,7 +9,8 @@ const actions = [
   "GAME_OVER",
   "SAVE_GAME",
   "MERGED",
-  "RESET_RESULT"
+  "RESET_RESULT",
+  "SET_MOVED"
 ];
 
 export default generateActions(actions);
