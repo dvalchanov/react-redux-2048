@@ -30,4 +30,4 @@ function setLucky(percentage) {
 /**
  * Export a new function telling if a certain number is the lucky one.
  */
-export const isLucky = setLucky(10);
+export const isLucky = setLucky(1);

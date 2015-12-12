@@ -119,8 +119,9 @@ function newTile(state) {
 
   const cell = randomCell(state);
   const tile = state.getIn(["cells", cell]);
+  const x = state.get("grid").flatten(2).find(t => t.get("value") === "x");
 
-  if (id > 1 && isLucky()) state = addTile(state, tile, "x");
+  if (id > 1 && isLucky() && !x) state = addTile(state, tile, "x");
   else state = addTile(state, tile);
 
   return state.removeIn(["cells", cell]);
