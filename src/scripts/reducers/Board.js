@@ -1,10 +1,16 @@
 import {Map, List, Range, fromJS} from "immutable";
 import actionTypes from "../actions/actionTypes";
-import {DIRECTIONS, VECTORS, INITIAL} from "../constants";
 import {randomNumber, isLucky} from "../utils/math";
 import {generateCells, generateGrid} from "../lib/generate";
 import store from "store2";
 import _ from "lodash";
+
+import {
+  INITIAL,
+  DIRECTIONS, VECTORS,
+  UNITS,
+  WIN_SCORE, START_SCORE
+} from "../constants";
 
 /**
  * New Random Tile
@@ -30,10 +36,10 @@ if (store.get("game")) {
 
 defaultState = Map({
   win: null,
-  score: 0,
-  dimensions: List.of(4, 4),
-  cells: generateCells(4, 4),
-  grid: generateGrid(4, 4),
+  score: START_SCORE,
+  dimensions: List.of(UNITS, UNITS),
+  cells: generateCells(UNITS, UNITS),
+  grid: generateGrid(UNITS, UNITS),
   isActual: true,
   fromSaved: false,
   moved: false
@@ -156,7 +162,7 @@ function findAvailableCell(state, tile, direction) {
   let available;
   const {axis, value} = getCurrent(direction);
   const from = tile.get(axis);
-  const to = value < 0 ? 3 : 0;
+  const to = value < 0 ? (UNITS - 1) : 0;
 
   Range(to, from).forEach(index => {
     const path = (
@@ -329,23 +335,20 @@ function mergeTiles(state) {
           id: id++
         });
 
-        if (newValue === 2048) {
-          state = state.set("win", true);
-        }
-
-        result += newValue;
+        if (newValue === WIN_SCORE) state = state.set("win", true);
 
         state = state.set("score", state.get("score") + newValue);
-
         grid = grid.setIn([x, y], List.of(tile));
+
+        result += newValue;
       }
     });
   });
 
-  state = state.set("moved", false);
-  state = state.set("result", result);
-  state = state.set("grid", grid);
-  return state.set("cells", cells);
+  return state.merge({
+    cells, result, grid,
+    moved: false
+  });
 }
 
 function saveGame(state) {
@@ -382,12 +385,11 @@ export default (state = initialState, action) => {
       return state;
 
     case actionTypes.RESET_RESULT:
-      state = state.set("result", 0);
+      state = state.set("result", START_SCORE);
       return state;
 
     case actionTypes.SET_MOVED:
       return state.set("moved", action.moved);
-
 
     default:
       return state;
