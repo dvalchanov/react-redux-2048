@@ -166,6 +166,10 @@ export default class Board extends Component {
     }
   }
 
+  handleRestart = () => {
+    this.context.actions.restartGame();
+  }
+
   render() {
     const {win, dimensions, fromSaved} = this.props;
 
@@ -183,7 +187,7 @@ export default class Board extends Component {
 
     return (
       <wrapper ref="board">
-        {hasEnded && <Overlay win={win} />}
+        {hasEnded && <Overlay win={win} onRestart={this.handleRestart} />}
         <container ref="tiles" id="tiles">
           {tileViews}
         </container>

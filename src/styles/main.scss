@@ -52,7 +52,27 @@ body {
     left: 0;
     z-index: 100;
 
-    background: rgba(188, 44, 26, 0.8);
+    &.lose {
+      background: rgba(188, 44, 26, 0.8);
+    }
+
+    &.win {
+      background: rgba(107, 171, 144, 0.8);
+    }
+
+    .restart {
+      @include center();
+
+      transition: .2s ease-in-out;
+      display: block;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+
+      &:hover {
+        transform: rotate(180deg);
+      }
+    }
 
     h2 {
       color: white;
