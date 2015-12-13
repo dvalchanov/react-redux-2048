@@ -2,47 +2,9 @@ import {Map, List, Range, fromJS} from "immutable";
 import actionTypes from "../actions/actionTypes";
 import {DIRECTIONS, VECTORS, INITIAL} from "../constants";
 import {randomNumber, isLucky} from "../utils/math";
+import {generateCells, generateGrid} from "../lib/generate";
 import store from "store2";
 import _ from "lodash";
-
-/**
- * Generate a list of the available empty cells.
- *
- * @param {Number} height
- * @param {Number} width
- * @returns {Object}
- */
-function generateCells(height, width) {
-  let cells = List();
-
-  _.times(height, x => {
-    _.times(width, y => {
-      cells = cells.push(Map({x, y}));
-    });
-  });
-
-  return cells;
-}
-
-/**
- * Generate a grid for of empty cells to be filled with tiles.
- *
- * @param {Number} height
- * @param {Number} width
- * @returns {Object}
- */
-function generateGrid(height, width) {
-  let cells = List();
-
-  _.times(height, x => {
-    cells = cells.set(x, List());
-    _.times(width, y => {
-      cells = cells.setIn([x, y], List());
-    });
-  });
-
-  return cells;
-}
 
 /**
  * New Random Tile
