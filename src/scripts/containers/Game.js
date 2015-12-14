@@ -5,11 +5,6 @@ import {Board, Result} from "../components";
 import * as Actions from "../actions/actions";
 
 /**
- * Use for local styles.
- */
-import styles from "../../styles/main.scss";
-
-/**
  * How to:
  *
  * - Include images:
@@ -80,7 +75,7 @@ export default class Game extends Component {
     if (result) resultView = <Result result={result}/>;
 
     return (
-      <main className={styles.wrapper}>
+      <main>
         <div id="score">
           {resultView}
           <h3>Score: {score}</h3>
