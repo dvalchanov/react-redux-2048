@@ -64,8 +64,6 @@ export default class Game extends Component {
     this.actions.saveGame();
   }
 
-  // TODO - Additional that has all the children - App.js
-  // TODO - this should be a normal container
   render() {
     const {score, result} = this.props;
     const children = this.props.children || [];
