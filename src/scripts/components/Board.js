@@ -104,11 +104,8 @@ export default class Board extends Component {
         this.called = false;
 
         // TODO
-        //
-        // Emit on updated tiles?!
         // Wait for all tiles to be rendered before actualizing them
         // or their initial position will be the actualized one
-        // WORKING WITH {50} ?
       }, 50);
     } else {
       if (this.props.moved) {
@@ -154,7 +151,6 @@ export default class Board extends Component {
 
   onTransitionEnd = (e) => {
     // Don't execute on first transition but on last!!
-    // TODO - wait for all transitions to end before creating new one
     if (e.propertyName === "transform") return;
     if (!this.called) {
       this.context.actions.mergeTiles();
