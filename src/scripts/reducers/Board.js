@@ -372,6 +372,7 @@ export default (state = initialState, action) => {
     case actionTypes.RESTART_GAME:
       store(false);
       state = defaultState;
+      // Not here!
       state = newTile(state);
       state = newTile(state);
       return state;
