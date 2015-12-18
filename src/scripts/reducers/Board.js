@@ -223,6 +223,14 @@ function sortTiles(tiles, direction) {
   return tiles;
 }
 
+/**
+ * Move each of the passed tiles.
+ *
+ * @param {Object} state
+ * @param {Object} tiles
+ * @param {Object} direction
+ * @returns {Object}
+ */
 function moveTiles(state, tiles, direction) {
   tiles.forEach(tile => state = moveTile(state, tile, direction));
   return state;
@@ -236,6 +244,7 @@ function moveTiles(state, tiles, direction) {
  * @param {Object] direction
  * @returns {Object}
  */
+// TODO - Fix
 function prepareTiles(state, direction) {
   let initial = state;
   let tiles = state.get("grid").flatten(2);
@@ -264,17 +273,13 @@ function prepareTiles(state, direction) {
   return state;
 }
 
-//function prepareTiles(state, direction) {
-  //const initial = state;
-  //let tiles = state.get("grid").flatten(2);
-  //tiles = sortTiles(tiles, direction);
-
-  //return moveTiles(state, tiles, direction);
-//}
-
 
 /**
- * ACTUALIZE
+ * Actualize the tiles if their grid positions
+ * is not the same as their actual position.
+ *
+ * @param {Object} state
+ * @returns {Object}
  */
 function actualize(state) {
   let grid = state.get("grid");
@@ -300,12 +305,12 @@ function actualize(state) {
 }
 
 /**
- * TODO - Separate
  * Merge tiles and update the empty cells list.
  *
  * @param {Object} state
  * @returns {Object}
  */
+// TODO - separate
 function mergeTiles(state) {
   let cells = List();
   let grid = state.get("grid");
@@ -319,23 +324,17 @@ function mergeTiles(state) {
 
       if (cell.size > 1) {
         const newValue = cell.reduce((t1, t2) => {
-          if (t1.get("value") === "x") {
-            return t2.get("value") + t2.get("value");
-          }
-
-          if (t2.get("value") === "x") {
-            return t1.get("value") + t1.get("value");
-          }
-
+          if (t1.get("value") === "x") return t2.get("value") * 2;
+          if (t2.get("value") === "x") return t1.get("value") * 2;
           return t1.get("value") + t2.get("value");
         });
+
+        if (newValue === WIN_SCORE) state = state.set("win", true);
 
         const tile = cell.first().merge({
           value: newValue,
           id: id++
         });
-
-        if (newValue === WIN_SCORE) state = state.set("win", true);
 
         state = state.set("score", state.get("score") + newValue);
         grid = grid.setIn([x, y], List.of(tile));
@@ -351,10 +350,19 @@ function mergeTiles(state) {
   });
 }
 
+/**
+ * Save the game to be continued another time.
+ *
+ * @param {Object} state
+ * @returs {Object}
+ */
 function saveGame(state) {
   store("game", state.toJS());
 }
 
+/**
+ * Default Reducer
+ */
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.NEW_TILE:
