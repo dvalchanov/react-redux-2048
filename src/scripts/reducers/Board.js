@@ -201,9 +201,7 @@ function moveTile(state, tile, direction) {
   if (available) {
     state = state.set("isActual", false);
     state = state.updateIn(available, cell => cell.push(tile));
-    state = state.updateIn(["grid", tile.get("x"), tile.get("y")], arr => {
-      return arr.pop();
-    });
+    state = state.updateIn(["grid", tile.get("x"), tile.get("y")], arr => arr.pop());
   }
 
   return state;
@@ -269,7 +267,6 @@ function prepareTiles(state, direction) {
     state = gameOver ? state.set("win", false) : initial;
   }
 
-
   return state;
 }
 
@@ -315,6 +312,14 @@ function actualize(state) {
 }
 
 
+/**
+ * Calculate the result of merging two tiles. Take in consideration that there
+ * could be an X-tile, which doubles the result of the other tile.
+ *
+ * @param {Object} t1
+ * @param {Object} t2
+ * @return {Number}
+ */
 function calculateTiles(t1, t2) {
   if (t1.get("value") === "x") return t2.get("value") * 2;
   if (t2.get("value") === "x") return t1.get("value") * 2;
