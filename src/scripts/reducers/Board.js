@@ -235,6 +235,24 @@ function moveTiles(state, tiles, direction) {
 }
 
 /**
+ * Recursively check if a the tiles can be moved in a certain direction.
+ */
+function recurse(current) {
+  if (current !== this.direction) this.initial = this.state = this.initial.set("moved", true);
+
+  this.directions = _.without(this.directions, current);
+  this.tiles = sortTiles(this.tiles, current);
+  this.state = moveTiles(this.state, this.tiles, current);
+
+  if (this.initial === this.state) {
+    if (this.directions.length) return recurse.call(this, this.directions[0]);
+    return this.state.set("win", false);
+  }
+
+  return current !== this.direction ? this.initial : this.state;
+}
+
+/**
  * Move the tile objects to their new cells positions, without changing
  * their canvas position yet.
  *
@@ -243,24 +261,16 @@ function moveTiles(state, tiles, direction) {
  * @returns {Object}
  */
 function prepareTiles(state, direction) {
-  let initial = state;
-  let tiles = state.get("grid").flatten(2);
-  let directions = _.values(DIRECTIONS);
+  const context = {
+    state,
+    direction,
+    initial: state,
+    tiles: state.get("grid").flatten(2),
+    directions: _.values(DIRECTIONS)
+  };
 
-  return (function recurse(current) {
-    if (current !== direction) initial = state = initial.set("moved", true);
-
-    directions = _.without(directions, current);
-    tiles = sortTiles(tiles, current);
-    state = moveTiles(state, tiles, current);
-
-    if (initial === state) {
-      if (directions.length) return recurse(directions[0]);
-      return state.set("win", false);
-    }
-
-    return current !== direction ? initial : state;
-  })(direction);
+  // call with context or pass context?
+  return recurse.call(context, direction);
 }
 
 
