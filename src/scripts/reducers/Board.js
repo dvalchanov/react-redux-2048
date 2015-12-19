@@ -275,6 +275,22 @@ function prepareTiles(state, direction) {
 
 
 /**
+ * Loop through each cell in the provided grid.
+ *
+ * @param {Object} grid
+ * @param {Function} cb
+ */
+function forEachAvailableCell(grid, cb) {
+  grid.forEach((row, x) => {
+    row.forEach((cell, y) => {
+      if (cell.size) {
+        cb({cell, x, y});
+      }
+    });
+  });
+}
+
+/**
  * Actualize the tiles if their grid positions
  * is not the same as their actual position.
  *
@@ -284,24 +300,19 @@ function prepareTiles(state, direction) {
 function actualize(state) {
   let grid = state.get("grid");
 
-  grid.forEach((row, x) => {
-    row.forEach((cell, y) => {
-      if (cell.size) {
-        cell.forEach((tile, index) => {
-          if (tile.get("x") !== x || tile.get("y") !== y) {
-            grid = grid.updateIn([x, y, index], t => {
-              return t.merge({x, y});
-            });
-          }
-        });
+  forEachAvailableCell(grid, ({cell, x, y}) => {
+    cell.forEach((tile, index) => {
+      if (tile.get("x") !== x || tile.get("y") !== y) {
+        grid = grid.updateIn([x, y, index], t => t.merge({x, y}));
       }
     });
   });
 
-  state = state.set("fromSaved", false);
-  state = state.set("isActual", true);
-
-  return state.set("grid", grid);
+  return state.merge({
+    fromSaved: false,
+    isActual: true,
+    grid
+  });
 }
 
 /**
