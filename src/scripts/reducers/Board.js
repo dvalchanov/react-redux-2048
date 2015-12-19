@@ -280,12 +280,10 @@ function prepareTiles(state, direction) {
  * @param {Object} grid
  * @param {Function} cb
  */
-function forEachAvailableCell(grid, cb) {
+function forEachCell(grid, cb) {
   grid.forEach((row, x) => {
     row.forEach((cell, y) => {
-      if (cell.size) {
-        cb({cell, x, y});
-      }
+      cb({cell, x, y});
     });
   });
 }
@@ -300,7 +298,8 @@ function forEachAvailableCell(grid, cb) {
 function actualize(state) {
   let grid = state.get("grid");
 
-  forEachAvailableCell(grid, ({cell, x, y}) => {
+  forEachCell(grid, ({cell, x, y}) => {
+    if (!cell.size) return;
     cell.forEach((tile, index) => {
       if (tile.get("x") !== x || tile.get("y") !== y) {
         grid = grid.updateIn([x, y, index], t => t.merge({x, y}));
@@ -315,49 +314,41 @@ function actualize(state) {
   });
 }
 
+
+function calculateTiles(t1, t2) {
+  if (t1.get("value") === "x") return t2.get("value") * 2;
+  if (t2.get("value") === "x") return t1.get("value") * 2;
+  return t1.get("value") + t2.get("value");
+}
+
 /**
  * Merge tiles and update the empty cells list.
  *
  * @param {Object} state
  * @returns {Object}
  */
-// TODO - separate
 function mergeTiles(state) {
   let cells = List();
   let grid = state.get("grid");
   let result = 0;
 
-  grid.forEach((row, x) => {
-    row.forEach((cell, y) => {
-      if (!cell.size) {
-        cells = cells.push(Map({x, y}));
-      }
+  forEachCell(grid, ({cell, x, y}) => {
+    if (!cell.size) cells = cells.push(Map({x, y}));
+    if (cell.size > 1) {
+      const value = cell.reduce((t1, t2) => calculateTiles(t1, t2));
 
-      if (cell.size > 1) {
-        const newValue = cell.reduce((t1, t2) => {
-          if (t1.get("value") === "x") return t2.get("value") * 2;
-          if (t2.get("value") === "x") return t1.get("value") * 2;
-          return t1.get("value") + t2.get("value");
-        });
-
-        if (newValue === WIN_SCORE) state = state.set("win", true);
-
-        const tile = cell.first().merge({
-          value: newValue,
-          id: id++
-        });
-
-        state = state.set("score", state.get("score") + newValue);
-        grid = grid.setIn([x, y], List.of(tile));
-
-        result += newValue;
-      }
-    });
+      result += value;
+      grid = grid.updateIn([x, y], () => List.of(cell.first().merge({value, id: id++})));
+      state = state.merge({
+        win: value === WIN_SCORE || null,
+        score: state.get("score") + value
+      });
+    }
   });
 
   return state.merge({
-    cells, result, grid,
-    moved: false
+    moved: false,
+    cells, result, grid
   });
 }
 
