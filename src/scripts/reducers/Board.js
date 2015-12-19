@@ -242,32 +242,25 @@ function moveTiles(state, tiles, direction) {
  * @param {Object] direction
  * @returns {Object}
  */
-// TODO - Fix
 function prepareTiles(state, direction) {
   let initial = state;
   let tiles = state.get("grid").flatten(2);
+  let directions = _.values(DIRECTIONS);
 
-  tiles = sortTiles(tiles, direction);
-  state = moveTiles(state, tiles, direction);
+  return (function recurse(current) {
+    if (current !== direction) initial = state = initial.set("moved", true);
 
-  // TODO - fix
-  if (initial === state) {
-    initial = initial.set("moved", true);
+    directions = _.without(directions, current);
+    tiles = sortTiles(tiles, current);
+    state = moveTiles(state, tiles, current);
 
-    let gameOver = true;
-    const rest = _.without(_.values(DIRECTIONS), direction);
+    if (initial === state) {
+      if (directions.length) return recurse(directions[0]);
+      return state.set("win", false);
+    }
 
-    _.each(rest, (d) => {
-      tiles = sortTiles(tiles, d);
-      state = moveTiles(state, tiles, d);
-
-      if (initial !== state) gameOver = false;
-    });
-
-    state = gameOver ? state.set("win", false) : initial;
-  }
-
-  return state;
+    return current !== direction ? initial : state;
+  })(direction);
 }
 
 
