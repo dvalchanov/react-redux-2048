@@ -8,6 +8,13 @@ import _ from "lodash";
 const startTiles = 2;
 const initialTouch = {x: 0, y: 0};
 
+function getTouches(touches) {
+  return {
+    x: touches[0].clientX,
+    y: touches[0].clientY
+  };
+}
+
 @connect(state => {
   return {
     board: state.board,
@@ -32,14 +39,17 @@ export default class Board extends Component {
     actions: PropTypes.object.isRequired
   }
 
-  componentDidMount() {
-    const tiles = this.refs.tiles;
-    const board = this.refs.board;
+  touch: initialTouch
+  called: false
+  queue = []
 
-    document.addEventListener("keyup", this.handleKeyUp, false);
-    tiles.addEventListener("transitionend", this.onTransitionEnd, false);
-    board.addEventListener("touchstart", this.handleTouchStart, false);
-    board.addEventListener("touchend", this.handleTouchEnd, false);
+  componentDidMount() {
+    const {tiles, board} = this.refs;
+
+    document.addEventListener("keyup", this._handleKeyUp, false);
+    tiles.addEventListener("transitionend", this._handleTransitionEnd, false);
+    board.addEventListener("touchstart", this._handleTouchStart, false);
+    board.addEventListener("touchend", this._handleTouchEnd, false);
 
     if (!this.props.fromSaved) {
       _.times(startTiles, () => {
@@ -47,55 +57,6 @@ export default class Board extends Component {
       });
     }
   }
-
-  handleKeyUp = (e) => {
-    const direction = DIRECTIONS[e.keyCode];
-
-    if (typeof direction !== "undefined") {
-      this.queue.push(direction);
-      this.execute(true);
-    }
-  }
-
-  touch: initialTouch
-
-  getTouches(touches) {
-    return {
-      x: touches[0].clientX,
-      y: touches[0].clientY
-    };
-  }
-
-  handleTouchStart = (e) => {
-    this.touch = this.getTouches(e.touches);
-  }
-
-  handleTouchEnd = (e) => {
-    if (!this.touch.x || !this.touch.y) return;
-
-    const {x, y} = this.getTouches(e.changedTouches);
-
-    const dX = this.touch.x - x;
-    const dY = this.touch.y - y;
-
-    if (Math.abs(dX) > Math.abs(dY)) {
-      if (dX > 0) {
-        this.context.actions.moveTiles(LEFT);
-      } else {
-        this.context.actions.moveTiles(RIGHT);
-      }
-    } else {
-      if (dY > 0) {
-        this.context.actions.moveTiles(UP);
-      } else {
-        this.context.actions.moveTiles(DOWN);
-      }
-    }
-
-    this.touch = initialTouch;
-  }
-
-  called: false
 
   componentDidUpdate(prevProps) {
     if (!this.props.isActual && prevProps.isActual !== this.props.isActual) {
@@ -118,54 +79,6 @@ export default class Board extends Component {
     }
   }
 
-  queue = []
-  resolve = null
-
-  moveTiles(direction) {
-    return new Promise((resolve) => {
-      this.resolve = resolve;
-      this.context.actions.moveTiles(direction);
-    });
-  }
-
-  execute = async function initialExecute() {
-    if (this.queue.length <= 1) {
-      await this.moveTiles(this.queue[0]);
-
-      if (this.queue.length) {
-        this.execute();
-      }
-    } else {
-      this.execute = async (initial) => {
-        if (initial) return;
-
-        if (this.queue.length) {
-          await this.moveTiles(this.queue[0]);
-          this.execute();
-        } else {
-          this.execute = initialExecute;
-        }
-      };
-    }
-  }
-
-  onTransitionEnd = (e) => {
-    // Don't execute on first transition but on last!!
-    if (e.propertyName === "transform") return;
-    if (!this.called) {
-      this.context.actions.mergeTiles();
-      this.context.actions.newTile();
-      this.called = true;
-
-      this.queue.shift();
-      this.resolve();
-    }
-  }
-
-  handleRestart = () => {
-    this.context.actions.restartGame();
-  }
-
   render() {
     const {win, dimensions, fromSaved} = this.props;
 
@@ -183,12 +96,90 @@ export default class Board extends Component {
 
     return (
       <wrapper ref="board">
-        {hasEnded && <Overlay win={win} onRestart={this.handleRestart} />}
+        {hasEnded && <Overlay win={win} onRestart={this._handleRestart} />}
         <container ref="tiles" id="tiles">
           {tileViews}
         </container>
         <Grid size={dimensions.toJS()} />
       </wrapper>
     );
+  }
+
+  _moveTiles(direction) {
+    return new Promise((resolve) => {
+      this.resolve = resolve;
+      this.context.actions.moveTiles(direction);
+    });
+  }
+
+  _execute = async function initialExecute() {
+    if (this.queue.length <= 1) {
+      await this._moveTiles(this.queue[0]);
+
+      if (this.queue.length) {
+        this._execute();
+      }
+    } else {
+      this._execute = async (initial) => {
+        if (initial) return;
+
+        if (this.queue.length) {
+          await this._moveTiles(this.queue[0]);
+          this._execute();
+        } else {
+          this._execute = initialExecute;
+        }
+      };
+    }
+  }
+
+  _handleKeyUp = (e) => {
+    const direction = DIRECTIONS[e.keyCode];
+
+    if (typeof direction !== "undefined") {
+      this.queue.push(direction);
+      this._execute(true);
+    }
+  }
+
+  _handleTouchStart = (e) => {
+    this.touch = getTouches(e.touches);
+  }
+
+  _handleTouchEnd = (e) => {
+    if (!this.touch.x || !this.touch.y) return;
+
+    const {x, y} = this.getTouches(e.changedTouches);
+
+    const dX = this.touch.x - x;
+    const dY = this.touch.y - y;
+
+    if (Math.abs(dX) > Math.abs(dY)) {
+      if (dX > 0) this.queue.push(LEFT);
+      else this.queue.push(RIGHT);
+    } else {
+      if (dY > 0) this.queue.push(UP);
+      else this.queue.push(DOWN);
+    }
+
+    this._execute(true);
+    this.touch = initialTouch;
+  }
+
+  _handleTransitionEnd = (e) => {
+    // Don't _execute on first transition end but on last!!
+    if (e.propertyName === "transform") return;
+    if (!this.called) {
+      this.context.actions.mergeTiles();
+      this.context.actions.newTile();
+      this.called = true;
+
+      this.queue.shift();
+      this.resolve();
+    }
+  }
+
+  _handleRestart = () => {
+    this.context.actions.restartGame();
   }
 }
