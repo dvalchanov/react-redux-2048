@@ -59,30 +59,27 @@ export default class Board extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!this.props.isActual && prevProps.isActual !== this.props.isActual) {
+    const {isActual, moved} = this.props;
+
+    if (!isActual && prevProps.isActual !== isActual) {
       setTimeout(() => {
         this.context.actions.actualize();
         this.called = false;
-
-        // TODO
-        // Wait for all tiles to be rendered before actualizing them
-        // or their initial position will be the actualized one
       }, 50);
     } else {
-      if (this.props.moved) {
+      if (moved) {
         this.called = true;
         this.queue.shift();
         this.resolve();
-
         this.context.actions.setMoved(false);
       }
     }
   }
 
   render() {
-    const {win, dimensions, fromSaved} = this.props;
+    const {board, win, dimensions, fromSaved} = this.props;
 
-    const tiles = this.props.board.get("grid").flatten(2);
+    const tiles = board.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
       return <Tile
                fromSaved={fromSaved}
