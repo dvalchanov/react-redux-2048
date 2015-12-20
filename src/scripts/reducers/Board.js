@@ -12,28 +12,27 @@ import {
   WIN_SCORE, START_SCORE
 } from "../constants";
 
-/**
- * New Random Tile
- *
- * newTile.js util/reducer ?
- */
 let id = 0;
 let initialState;
-let savedState;
 let defaultState;
 
-if (store.get("game")) {
-  const tiles = _.flatten(store.get("game").grid, true);
-  const ids = _.pluck(tiles, "id");
-  if (ids.length) {
-    id = _.max(ids) + 1;
-  }
-
+/**
+ * Start the game from a saved position if there is such.
+ */
+function startSavedGame() {
   const game = store.get("game");
-  game.fromSaved = true;
-  savedState = fromJS(game);
+
+  if (game) {
+    const tiles = _.flatten(game.grid, true);
+    if (_.pluck(tiles, "id").length) id = _.max(ids) + 1;
+    game.fromSaved = true;
+    return fromJS(game);
+  }
 }
 
+/**
+ * Default starting state.
+ */
 defaultState = Map({
   win: null,
   score: START_SCORE,
@@ -45,7 +44,10 @@ defaultState = Map({
   moved: false
 });
 
-initialState = savedState || defaultState;
+/**
+ * Set the starting state according to whether there is a saved game.
+ */
+initialState = startSavedGame() || defaultState;
 
 
 /**
