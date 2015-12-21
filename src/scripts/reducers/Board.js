@@ -62,7 +62,7 @@ function randomCell(state) {
 }
 
 /**
- * Push a new tile into the chosen cell.
+ * Push a new tile into the chosen empty cell.
  *
  * @param {Object} state
  * @param {Object} tile
@@ -177,12 +177,13 @@ function findAvailableCell(state, tile, direction) {
 
     if (!isSuitable(cell, tile)) {
       available = null;
+      return;
+    }
+
+    if (tile.get("value") === "x") {
+      if (cell.size === 1 || (!cell.size && !available)) available = path;
     } else {
-      if (tile.get("value") === "x") {
-        if (cell.size === 1 || (!cell.size && !available)) available = path;
-      } else {
-        available = available || path;
-      }
+      available = available || path;
     }
   });
 
@@ -190,7 +191,7 @@ function findAvailableCell(state, tile, direction) {
 }
 
 /**
- * Move the current tile to an available cell by following its path.
+ * Move the current tile to an available cell by following the provided path.
  *
  * @param {Object} state
  * @param {Object} tile
@@ -237,24 +238,6 @@ function moveTiles(state, tiles, direction) {
 }
 
 /**
- * Recursively check if a the tiles can be moved in a certain direction.
- */
-function recurse(current) {
-  if (current !== this.direction) this.initial = this.state = this.initial.set("moved", true);
-
-  this.directions = _.without(this.directions, current);
-  this.tiles = sortTiles(this.tiles, current);
-  this.state = moveTiles(this.state, this.tiles, current);
-
-  if (this.initial === this.state) {
-    if (this.directions.length) return recurse.call(this, this.directions[0]);
-    return this.state.set("win", false);
-  }
-
-  return current !== this.direction ? this.initial : this.state;
-}
-
-/**
  * Move the tile objects to their new cells positions, without changing
  * their canvas position yet.
  *
@@ -263,16 +246,24 @@ function recurse(current) {
  * @returns {Object}
  */
 function prepareTiles(state, direction) {
-  const context = {
-    state,
-    direction,
-    initial: state,
-    tiles: state.get("grid").flatten(2),
-    directions: _.values(DIRECTIONS)
-  };
+  let initial = state;
+  let directions = _.values(DIRECTIONS);
+  let tiles = state.get("grid").flatten(2);
 
-  // call with context or pass context?
-  return recurse.call(context, direction);
+  return (function check(current) {
+    if (current !== direction) initial = state = initial.set("moved", true);
+
+    directions = _.without(directions, current);
+    tiles = sortTiles(tiles, current);
+    state = moveTiles(state, tiles, current);
+
+    if (initial === state) {
+      if (directions.length) return check(directions[0]);
+      return state.set("win", false);
+    }
+
+    return (current !== direction) ? initial : state;
+  })(direction);
 }
 
 
