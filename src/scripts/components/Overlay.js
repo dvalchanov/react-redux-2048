@@ -1,4 +1,4 @@
-import restartImage from "../../images/restart.svg";
+import restartImage from "img/restart.svg";
 
 export default ({win = false, onRestart}) => {
   const message = win ?

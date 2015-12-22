@@ -1,4 +1,4 @@
-import {generateActions} from "../utils/actions";
+import {generateActions} from "js/utils/actions";
 
 const actions = [
   "NEW_TILE",

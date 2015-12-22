@@ -1,4 +1,4 @@
-import {VECTORS} from "../constants";
+import {VECTORS} from "js/constants";
 
 /**
  * Get a certain direction vectors.

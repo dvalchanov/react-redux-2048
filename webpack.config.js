@@ -172,6 +172,15 @@ var config = {
   resolve: {
 
     /**
+     * Alias for resolving modules names.
+     */
+    alias: {
+      js: path.join(__dirname, "src", "scripts"),
+      img: path.join(__dirname, "src", "images"),
+      css: path.join(__dirname, "src", "styles")
+    },
+
+    /**
      * Directories to be resolved.
      */
     modulesDirectories: [

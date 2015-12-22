@@ -5,8 +5,8 @@ import {Router, Route} from "react-router";
 import {Provider} from "react-redux";
 import thunk from "redux-thunk";
 
-import {createStore, renderDevTools} from "../utils/devTools";
-import reducers from "../reducers";
+import {createStore, renderDevTools} from "js/utils/devTools";
+import reducers from "js/reducers";
 import Game from "./Game";
 
 const store = compose(

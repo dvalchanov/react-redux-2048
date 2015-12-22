@@ -1,8 +1,8 @@
 import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {Board, Result} from "../components";
-import * as Actions from "../actions/actions";
+import {Board, Result} from "js/components";
+import * as Actions from "js/actions/actions";
 
 /**
  * How to:

@@ -1,7 +1,7 @@
 import {Map, List, Range, fromJS} from "immutable";
-import actionTypes from "../actions/actionTypes";
-import {isLucky} from "../utils/math";
-import {getCurrent} from "../utils/vectors";
+import actionTypes from "js/actions/actionTypes";
+import {isLucky} from "js/utils/math";
+import {getCurrent} from "js/utils/vectors";
 import store from "store2";
 import _ from "lodash";
 
@@ -10,7 +10,7 @@ import {
   generateGrid,
   forEachCell,
   randomCell
-} from "../helpers";
+} from "js/helpers";
 
 import {
   INITIAL,
@@ -18,7 +18,7 @@ import {
   DIRECTIONS,
   UNITS,
   WIN_SCORE, START_SCORE
-} from "../constants";
+} from "js/constants";
 
 /**
  * ID counter.
