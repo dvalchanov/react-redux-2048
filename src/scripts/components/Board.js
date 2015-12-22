@@ -1,7 +1,7 @@
 import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
-import {Grid, Tile, Overlay} from "./";
 import {List, Map} from "immutable";
+import {Grid, Tile, Overlay} from "./";
 import {DIRECTIONS, UP, LEFT, DOWN, RIGHT} from "js/constants";
 
 const initialTouch = {x: 0, y: 0};

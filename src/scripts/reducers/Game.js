@@ -1,9 +1,9 @@
 import {Map, List, Range, fromJS} from "immutable";
+import store from "store2";
+import _ from "lodash";
 import actionTypes from "js/actions/actionTypes";
 import {isLucky} from "js/utils/math";
 import {getCurrent} from "js/utils/vectors";
-import store from "store2";
-import _ from "lodash";
 
 import {
   generateCells,
