@@ -35,8 +35,7 @@ const defaultState = Map({
   cells: generateCells(UNITS, UNITS),
   grid: generateGrid(UNITS, UNITS),
   isActual: true,
-  fromSaved: false,
-  moved: false
+  fromSaved: false
 });
 
 /**
@@ -217,7 +216,7 @@ function moveInDirection(state, direction) {
   let tiles = state.get("grid").flatten(2);
 
   const check = (current) => {
-    if (current !== direction) initial = state = initial.set("moved", true);
+    if (current !== direction) initial = state;
 
     directions = _.without(directions, current);
     tiles = sortTiles(tiles, current);
@@ -299,7 +298,6 @@ function mergeTiles(state) {
   });
 
   return state.merge({
-    moved: false,
     cells, result, grid
   });
 }
@@ -338,9 +336,6 @@ export default (state = initialState, action) => {
     case actionTypes.RESET_RESULT:
       state = state.set("result", START_SCORE);
       return state;
-
-    case actionTypes.SET_MOVED:
-      return state.set("moved", action.moved);
 
     default:
       return state;

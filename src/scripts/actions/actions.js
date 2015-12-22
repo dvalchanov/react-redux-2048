@@ -56,12 +56,3 @@ export function resetResult() {
     });
   };
 }
-
-export function setMoved(moved) {
-  return dispatch => {
-    dispatch({
-      type: actionTypes.SET_MOVED,
-      moved
-    });
-  };
-}

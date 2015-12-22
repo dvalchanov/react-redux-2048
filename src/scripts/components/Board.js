@@ -21,8 +21,7 @@ function getTouches(touches) {
     dimensions: game.get("dimensions"),
     isActual: game.get("isActual"),
     win: game.get("win"),
-    fromSaved: game.get("fromSaved"),
-    moved: game.get("moved")
+    fromSaved: game.get("fromSaved")
   };
 })
 export default class Board extends Component {
@@ -31,12 +30,15 @@ export default class Board extends Component {
     dimensions: PropTypes.instanceOf(List).isRequired,
     isActual: PropTypes.bool.isRequired,
     win: PropTypes.bool,
-    fromSaved: PropTypes.bool.isRequired,
-    moved: PropTypes.bool.isRequired
+    fromSaved: PropTypes.bool.isRequired
   }
 
   static contextTypes = {
     actions: PropTypes.object.isRequired
+  }
+
+  state = {
+    moved: false
   }
 
   touch: initialTouch
@@ -57,19 +59,19 @@ export default class Board extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {isActual, moved} = this.props;
+    const {isActual} = this.props;
 
     if (!isActual && prevProps.isActual !== isActual) {
       setTimeout(() => {
         this.context.actions.actualize();
+        this.setState({moved: false});
         this.called = false;
       }, 50);
     } else {
-      if (moved) {
-        this.called = true;
+      if (this.state.moved) {
         this.queue.shift();
         this.resolve();
-        this.context.actions.setMoved(false);
+        this.called = true;
       }
     }
   }
@@ -104,6 +106,7 @@ export default class Board extends Component {
     return new Promise((resolve) => {
       this.resolve = resolve;
       this.context.actions.moveTiles(direction);
+      this.setState({moved: true});
     });
   }
 
