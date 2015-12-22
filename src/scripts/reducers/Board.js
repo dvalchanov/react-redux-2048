@@ -1,39 +1,34 @@
 import {Map, List, Range, fromJS} from "immutable";
 import actionTypes from "../actions/actionTypes";
-import {randomNumber, isLucky} from "../utils/math";
-import {generateCells, generateGrid} from "../lib/generate";
+import {isLucky} from "../utils/math";
+import {getCurrent} from "../utils/vectors";
 import store from "store2";
 import _ from "lodash";
 
 import {
+  generateCells,
+  generateGrid,
+  forEachCell,
+  randomCell
+} from "../helpers";
+
+import {
   INITIAL,
-  DIRECTIONS, VECTORS,
+  STARTING_TILES,
+  DIRECTIONS,
   UNITS,
   WIN_SCORE, START_SCORE
 } from "../constants";
 
-let id = 0;
-let initialState;
-let defaultState;
-
 /**
- * Start the game from a saved position if there is such.
+ * ID counter.
  */
-function startSavedGame() {
-  const game = store.get("game");
-
-  if (game) {
-    const tiles = _.flatten(game.grid, true);
-    if (_.pluck(tiles, "id").length) id = _.max(ids) + 1;
-    game.fromSaved = true;
-    return fromJS(game);
-  }
-}
+let id = 0;
 
 /**
  * Default starting state.
  */
-defaultState = Map({
+const defaultState = Map({
   win: null,
   score: START_SCORE,
   dimensions: List.of(UNITS, UNITS),
@@ -45,20 +40,25 @@ defaultState = Map({
 });
 
 /**
- * Set the starting state according to whether there is a saved game.
+ * Set the initial state according to whether there is a saved game.
  */
-initialState = startSavedGame() || defaultState;
-
+const initialState = startSavedGame() || defaultState;
 
 /**
- * Get a random cell from the list of empty cells.
+ * Start the game from a saved position if there is such.
  *
- * @param {Object} state
- * @returns {Object}
+ * @returns {}
  */
-function randomCell(state) {
-  const max = state.get("cells").size - 1;
-  return randomNumber(0, max);
+function startSavedGame() {
+  const game = store.get("game");
+
+  if (game) {
+    const tiles = _.flatten(game.grid, true);
+    const ids = _.pluck(tiles, "id");
+    if (ids.length) id = _.max(ids) + 1;
+    game.fromSaved = true;
+    return fromJS(game);
+  }
 }
 
 /**
@@ -87,7 +87,7 @@ function addTile(state, tile, value) {
 function newTile(state) {
   if (!state.get("cells").size) return state;
 
-  const cell = randomCell(state);
+  const cell = randomCell(state.get("cells"));
   const tile = state.getIn(["cells", cell]);
   const x = state.get("grid").flatten(2).find(t => t.get("value") === "x");
 
@@ -95,41 +95,6 @@ function newTile(state) {
   else state = addTile(state, tile);
 
   return state.removeIn(["cells", cell]);
-}
-
-
-/**
- * Get a certain direction vectors.
- *
- * @param {Number} n
- * @returns {Object}
- */
-function getVector(direction) {
-  return VECTORS[direction];
-}
-
-/**
- * Get the current direction axis and value.
- *
- * @param {Object} direction
- * @returns {Object}
- */
-function getCurrent(direction) {
-  let axis;
-  const directions = getVector(direction);
-
-  for (const i in directions) {
-    if ({}.hasOwnProperty.call(directions, i)) {
-      if (directions[i] !== 0) {
-        axis = i;
-      }
-    }
-  }
-
-  return {
-    axis,
-    value: directions[axis]
-  };
 }
 
 /**
@@ -191,7 +156,7 @@ function findAvailableCell(state, tile, direction) {
 }
 
 /**
- * Move the current tile to an available cell by following the provided path.
+ * Move the current tile to an available cell by following the provided available path.
  *
  * @param {Object} state
  * @param {Object} tile
@@ -238,19 +203,20 @@ function moveTiles(state, tiles, direction) {
 }
 
 /**
- * Move the tile objects to their new cells positions, without changing
- * their canvas position yet.
+ * Move the tiles in a certain direction. If not possible, check if the other
+ * directions are available. If not, end the game. If available, just return the
+ * current state (which will let the user adjust direction on next try).
  *
  * @param {Object} state
  * @param {Object] direction
  * @returns {Object}
  */
-function prepareTiles(state, direction) {
+function moveInDirection(state, direction) {
   let initial = state;
   let directions = _.values(DIRECTIONS);
   let tiles = state.get("grid").flatten(2);
 
-  return (function check(current) {
+  const check = (current) => {
     if (current !== direction) initial = state = initial.set("moved", true);
 
     directions = _.without(directions, current);
@@ -263,27 +229,13 @@ function prepareTiles(state, direction) {
     }
 
     return (current !== direction) ? initial : state;
-  })(direction);
-}
+  };
 
-
-/**
- * Loop through each cell in the provided grid.
- *
- * @param {Object} grid
- * @param {Function} cb
- */
-function forEachCell(grid, cb) {
-  grid.forEach((row, x) => {
-    row.forEach((cell, y) => {
-      cb({cell, x, y});
-    });
-  });
+  return check(direction);
 }
 
 /**
- * Actualize the tiles if their grid positions
- * is not the same as their actual position.
+ * Actualize the tiles if their grid positions is not the same as their actual position.
  *
  * @param {Object} state
  * @returns {Object}
@@ -306,7 +258,6 @@ function actualize(state) {
     grid
   });
 }
-
 
 /**
  * Calculate the result of merging two tiles. Take in consideration that there
@@ -354,16 +305,6 @@ function mergeTiles(state) {
 }
 
 /**
- * Save the game to be continued another time.
- *
- * @param {Object} state
- * @returs {Object}
- */
-function saveGame(state) {
-  store("game", state.toJS());
-}
-
-/**
  * Default Reducer
  */
 export default (state = initialState, action) => {
@@ -372,7 +313,7 @@ export default (state = initialState, action) => {
       return newTile(state);
 
     case actionTypes.MOVE_TILES:
-      return prepareTiles(state, action.direction);
+      return moveInDirection(state, action.direction);
 
     case actionTypes.ACTUALIZE:
       return actualize(state);
@@ -380,12 +321,10 @@ export default (state = initialState, action) => {
     case actionTypes.MERGE_TILES:
       return mergeTiles(state);
 
-    case actionTypes.RESTART_GAME:
+    case actionTypes.INIT_GAME:
       store(false);
       state = defaultState;
-      // Not here!
-      state = newTile(state);
-      state = newTile(state);
+      _.times(STARTING_TILES, () => state = newTile(state));
       return state;
 
     case actionTypes.GAME_OVER:
@@ -393,7 +332,7 @@ export default (state = initialState, action) => {
       return state;
 
     case actionTypes.SAVE_GAME:
-      saveGame(state);
+      store("game", state.toJS());
       return state;
 
     case actionTypes.RESET_RESULT:

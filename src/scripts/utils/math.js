@@ -1,6 +1,5 @@
 /**
  * Get a random number in a certain range.
- * TODO - in util
  *
  * @param {Number} min
  * @param {Number} max

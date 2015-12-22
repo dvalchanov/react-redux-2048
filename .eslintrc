@@ -176,7 +176,7 @@
     "no-undef": 0,
     "no-undefined": 2,
     "no-unused-vars": 1,
-    "no-use-before-define": 2,
+    "no-use-before-define": 0,
 
     "no-const-assign": 2,
     "no-var": 2,

@@ -1,5 +1,3 @@
-import keyMirror from "keymirror";
-
 /**
  * Generate action types in the form of:
  *
@@ -17,9 +15,9 @@ export function generateActions(actions) {
 
   for (const i in actions) {
     if ({}.hasOwnProperty.call(actions, i)) {
-      actionMap[actions[i]] = null;
+      actionMap[actions[i]] = actions[i];
     }
   }
 
-  return keyMirror(actionMap);
+  return actionMap;
 }

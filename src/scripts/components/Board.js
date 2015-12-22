@@ -3,9 +3,7 @@ import {connect} from "react-redux";
 import {Grid, Tile, Overlay} from "./";
 import {List, Map} from "immutable";
 import {DIRECTIONS, UP, LEFT, DOWN, RIGHT} from "../constants";
-import _ from "lodash";
 
-const startTiles = 2;
 const initialTouch = {x: 0, y: 0};
 
 function getTouches(touches) {
@@ -52,9 +50,7 @@ export default class Board extends Component {
     board.addEventListener("touchend", this._handleTouchEnd, false);
 
     if (!this.props.fromSaved) {
-      _.times(startTiles, () => {
-        this.context.actions.newTile();
-      });
+      this.context.actions.initGame();
     }
   }
 
@@ -177,6 +173,6 @@ export default class Board extends Component {
   }
 
   _handleRestart = () => {
-    this.context.actions.restartGame();
+    this.context.actions.initGame();
   }
 }

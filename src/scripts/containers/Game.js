@@ -56,14 +56,6 @@ export default class Game extends Component {
     };
   }
 
-  handleNewGame = () => {
-    this.actions.restartGame();
-  }
-
-  handleSaveGame = () => {
-    this.actions.saveGame();
-  }
-
   render() {
     const {score, result} = this.props;
     const children = this.props.children || [];
@@ -78,10 +70,18 @@ export default class Game extends Component {
           {resultView}
           <h3>Score: {score}</h3>
         </div>
-        <button onClick={this.handleNewGame}>New Game</button>
-        <button onClick={this.handleSaveGame}>Save Game</button>
+        <button onClick={this._handleNewGame}>New Game</button>
+        <button onClick={this._handleSaveGame}>Save Game</button>
         {children}
       </main>
     );
+  }
+
+  _handleNewGame = () => {
+    this.actions.initGame();
+  }
+
+  _handleSaveGame = () => {
+    this.actions.saveGame();
   }
 }

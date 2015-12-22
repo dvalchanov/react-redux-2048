@@ -5,6 +5,7 @@ const actions = [
   "MOVE_TILES",
   "ACTUALIZE",
   "MERGE_TILES",
+  "INIT_GAME",
   "RESTART_GAME",
   "GAME_OVER",
   "SAVE_GAME",

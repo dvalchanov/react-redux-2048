@@ -16,10 +16,6 @@ export default class Result extends Component {
     result.addEventListener("transitionend", this.onTransitionEnd, false);
   }
 
-  onTransitionEnd = () => {
-    this.context.actions.resetResult();
-  }
-
   render() {
     const {result} = this.props;
 
@@ -34,5 +30,9 @@ export default class Result extends Component {
         <div ref="result" className="result">+{result}</div>
       </ReactCSSTransitionGroup>
     );
+  }
+
+  _onTransitionEnd = () => {
+    this.context.actions.resetResult();
   }
 }

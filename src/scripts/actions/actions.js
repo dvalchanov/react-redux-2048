@@ -42,10 +42,10 @@ export function mergeTiles() {
   };
 }
 
-export function restartGame() {
+export function initGame() {
   return dispatch => {
     dispatch({
-      type: actionTypes.RESTART_GAME
+      type: actionTypes.INIT_GAME
     });
   };
 }
