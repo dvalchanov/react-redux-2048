@@ -1,8 +1,8 @@
 import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
-import {List, Map} from "immutable";
+import {Map} from "immutable";
 import {Grid, Tile, Overlay} from "./";
-import {DIRECTIONS, UP, LEFT, DOWN, RIGHT} from "js/constants";
+import {DIRECTIONS, UP, LEFT, DOWN, RIGHT, SIZE} from "js/constants";
 
 const initialTouch = {x: 0, y: 0};
 
@@ -18,7 +18,6 @@ function getTouches(touches) {
 
   return {
     game,
-    dimensions: game.get("dimensions"),
     isActual: game.get("isActual"),
     win: game.get("win"),
     fromSaved: game.get("fromSaved")
@@ -27,7 +26,6 @@ function getTouches(touches) {
 export default class Board extends Component {
   static propTypes = {
     game: PropTypes.instanceOf(Map).isRequired,
-    dimensions: PropTypes.instanceOf(List).isRequired,
     isActual: PropTypes.bool.isRequired,
     win: PropTypes.bool,
     fromSaved: PropTypes.bool.isRequired
@@ -77,7 +75,7 @@ export default class Board extends Component {
   }
 
   render() {
-    const {game, win, dimensions, fromSaved} = this.props;
+    const {game, win, fromSaved} = this.props;
 
     const tiles = game.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
@@ -97,7 +95,7 @@ export default class Board extends Component {
         <container ref="tiles" id="tiles">
           {tileViews}
         </container>
-        <Grid size={dimensions.toJS()} />
+        <Grid size={SIZE} />
       </wrapper>
     );
   }

@@ -16,7 +16,7 @@ import {
   INITIAL,
   STARTING_TILES,
   DIRECTIONS,
-  UNITS,
+  SIZE,
   WIN_SCORE, START_SCORE
 } from "js/constants";
 
@@ -31,9 +31,8 @@ let id = 0;
 const defaultState = Map({
   win: null,
   score: START_SCORE,
-  dimensions: List.of(UNITS, UNITS),
-  cells: generateCells(UNITS, UNITS),
-  grid: generateGrid(UNITS, UNITS),
+  cells: generateCells(SIZE, SIZE),
+  grid: generateGrid(SIZE, SIZE),
   isActual: true,
   fromSaved: false
 });
@@ -128,7 +127,7 @@ function findAvailableCell(state, tile, direction) {
   let available;
   const {axis, value} = getCurrent(direction);
   const from = tile.get(axis);
-  const to = value < 0 ? (UNITS - 1) : 0;
+  const to = value < 0 ? (SIZE - 1) : 0;
 
   Range(to, from).forEach(index => {
     const path = (
