@@ -31,8 +31,8 @@ import * as Actions from "../actions/actions";
  */
 @connect(state => {
   return {
-    score: state.board.get("score"),
-    result: state.board.get("result")
+    score: state.game.get("score"),
+    result: state.game.get("result")
   };
 })
 export default class Game extends Component {

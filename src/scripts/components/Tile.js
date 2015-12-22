@@ -18,15 +18,6 @@ export default class Tile extends Component {
     actions: PropTypes.object.isRequired
   }
 
-  componentDidMount() {
-    if (this.props.merged) {
-      setTimeout(() => {
-        this.context.actions.merged(this.props.id);
-        // Do this on transition end!!
-      }, 500);
-    }
-  }
-
   render() {
     const {x, y, value, id, fromSaved} = this.props;
 

@@ -14,18 +14,20 @@ function getTouches(touches) {
 }
 
 @connect(state => {
+  const game = state.game;
+
   return {
-    board: state.board,
-    dimensions: state.board.get("dimensions"),
-    isActual: state.board.get("isActual"),
-    win: state.board.get("win"),
-    fromSaved: state.board.get("fromSaved"),
-    moved: state.board.get("moved")
+    game,
+    dimensions: game.get("dimensions"),
+    isActual: game.get("isActual"),
+    win: game.get("win"),
+    fromSaved: game.get("fromSaved"),
+    moved: game.get("moved")
   };
 })
 export default class Board extends Component {
   static propTypes = {
-    board: PropTypes.instanceOf(Map).isRequired,
+    game: PropTypes.instanceOf(Map).isRequired,
     dimensions: PropTypes.instanceOf(List).isRequired,
     isActual: PropTypes.bool.isRequired,
     win: PropTypes.bool,
@@ -73,9 +75,9 @@ export default class Board extends Component {
   }
 
   render() {
-    const {board, win, dimensions, fromSaved} = this.props;
+    const {game, win, dimensions, fromSaved} = this.props;
 
-    const tiles = board.get("grid").flatten(2);
+    const tiles = game.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
       return <Tile
                fromSaved={fromSaved}
@@ -139,6 +141,7 @@ export default class Board extends Component {
     this.touch = getTouches(e.touches);
   }
 
+  // in util?
   _handleTouchEnd = (e) => {
     if (!this.touch.x || !this.touch.y) return;
 

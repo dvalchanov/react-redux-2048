@@ -13,7 +13,7 @@ export default class Result extends Component {
 
   componentDidMount() {
     const result = this.refs.result;
-    result.addEventListener("transitionend", this.onTransitionEnd, false);
+    result.addEventListener("transitionend", this._onTransitionEnd, false);
   }
 
   render() {
