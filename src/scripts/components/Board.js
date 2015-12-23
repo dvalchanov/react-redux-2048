@@ -4,8 +4,17 @@ import {Map} from "immutable";
 import {Grid, Tile, Overlay} from "./";
 import {DIRECTIONS, UP, LEFT, DOWN, RIGHT, SIZE} from "js/constants";
 
+/**
+ * Default touch values.
+ */
 const initialTouch = {x: 0, y: 0};
 
+/**
+ * Get the according touches for `x` and `y` axis.
+ *
+ * @param {Object} touches
+ * @returns {Object}
+ */
 function getTouches(touches) {
   return {
     x: touches[0].clientX,
@@ -13,6 +22,9 @@ function getTouches(touches) {
   };
 }
 
+/**
+ * Connect this component with its according reducer and needed values.
+ */
 @connect(state => {
   const game = state.game;
 
@@ -24,6 +36,10 @@ function getTouches(touches) {
   };
 })
 export default class Board extends Component {
+
+  /**
+   * Expected properties object types.
+   */
   static propTypes = {
     game: PropTypes.instanceOf(Map).isRequired,
     isActual: PropTypes.bool.isRequired,
@@ -31,18 +47,43 @@ export default class Board extends Component {
     fromSaved: PropTypes.bool.isRequired
   }
 
+  /**
+   * Expected context object types.
+   */
   static contextTypes = {
     actions: PropTypes.object.isRequired
   }
 
+  /**
+   * Initial component`s state.
+   */
   state = {
     moved: false
   }
 
+  /**
+   * Current touch `x` and `y` values.
+   */
   touch: initialTouch
+
+  /**
+   * Used to initiate the merging of tiles only once.
+   * Set to `true` after that and returned to `false` on the next turn.
+   */
   called: false
+
+  /**
+   * Queue of actions to be executed. Needed in case a new event is initiated
+   * earlier than the previous one has completed.
+   */
   queue = []
 
+  /**
+   * Called only once.
+   *
+   * Initialize important event listeners and the game if
+   * there is a saved state.
+   */
   componentDidMount() {
     const {tiles, board} = this.refs;
 
@@ -56,6 +97,12 @@ export default class Board extends Component {
     }
   }
 
+  /**
+   * Called after each time the component is updated.
+   *
+   * Check if there is some change in the tiles positions that needs to be actualized,
+   * or restart the actions queue if there is not change after the move.
+   */
   componentDidUpdate(prevProps) {
     const {isActual} = this.props;
 
@@ -74,6 +121,9 @@ export default class Board extends Component {
     }
   }
 
+  /**
+   * Render the provided structure.
+   */
   render() {
     const {game, win, fromSaved} = this.props;
 
@@ -100,6 +150,13 @@ export default class Board extends Component {
     );
   }
 
+  /**
+   * Move the tiles and set a new Promise that needs to be completed after the merging.
+   * If not completed the next action in the queue won't be executed.
+   *
+   * @param {direction}
+   * @returns {Promise}
+   */
   _moveTiles(direction) {
     return new Promise((resolve) => {
       this.resolve = resolve;
@@ -108,6 +165,11 @@ export default class Board extends Component {
     });
   }
 
+  /**
+   * Execute the actions in the queue one after another. Change the function after
+   * the first execution, since the logic is changed after that or set the initial
+   * function if there are no more actions to be executed.
+   */
   _execute = async function initialExecute() {
     if (this.queue.length <= 1) {
       await this._moveTiles(this.queue[0]);
@@ -129,6 +191,12 @@ export default class Board extends Component {
     }
   }
 
+  /**
+   * Check the key code and execute the according action if it's an arrow key,
+   * meaning if it is from the given directions.
+   *
+   * @param {Object} e
+   */
   _handleKeyUp = (e) => {
     const direction = DIRECTIONS[e.keyCode];
 
@@ -138,11 +206,21 @@ export default class Board extends Component {
     }
   }
 
+  /**
+   * Save the initial touch event.
+   *
+   * @param {Object} e
+   */
   _handleTouchStart = (e) => {
     this.touch = getTouches(e.touches);
   }
 
-  // in util?
+  /**
+   * Calculate the difference between the start and end touches, check what
+   * the direction is and execute the according action.
+   *
+   * @param {Object} e
+   */
   _handleTouchEnd = (e) => {
     if (!this.touch.x || !this.touch.y) return;
 
@@ -163,6 +241,12 @@ export default class Board extends Component {
     this.touch = initialTouch;
   }
 
+  /**
+   * Merge the tiles and create a new one after the tiles
+   * are moved to their new positions.
+   *
+   * @param {Object} e
+   */
   _handleTransitionEnd = (e) => {
     // Don't _execute on first transition end but on last!!
     if (e.propertyName === "transform") return;
@@ -176,6 +260,10 @@ export default class Board extends Component {
     }
   }
 
+  /**
+   * Restart the game.
+   * TODO - should be the same as the restart in Game.js
+   */
   _handleRestart = () => {
     this.context.actions.initGame();
   }
