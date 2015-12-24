@@ -15,19 +15,7 @@ import * as Actions from "js/actions/actions";
 /**
  * ES7 Decorator
  *
- * Return your specific states/values to use in the component.
- *
- * - Example:
- *
- *   In decorator:
- *
- *     return {
- *       user: state.user
- *     }
- *
- *   In component:
- *
- *     const {user} = this.props;
+ * Return specific states/values to use in the component.
  */
 @connect(state => {
   return {
@@ -36,26 +24,44 @@ import * as Actions from "js/actions/actions";
   };
 })
 export default class Game extends Component {
+
+  /**
+   * On class initialization bind all the actions to the dispatch function.
+   *
+   * @param {Object} props
+   */
   constructor(props) {
     super(props);
     this.actions = bindActionCreators(Actions, this.props.dispatch);
   }
 
+  /**
+   * Expected properties object types.
+   */
   static propTypes = {
     score: PropTypes.number.isRequired,
     result: PropTypes.number
   }
 
+  /**
+   * Expected context object types.
+   */
   static childContextTypes = {
     actions: PropTypes.object
   }
 
+  /**
+   * Getter for the child context object.
+   */
   getChildContext() {
     return {
       actions: this.actions
     };
   }
 
+  /**
+   * Render the provided structure.
+   */
   render() {
     const {score, result} = this.props;
     const children = this.props.children || [];
@@ -77,10 +83,16 @@ export default class Game extends Component {
     );
   }
 
+  /**
+   * Start a new game.
+   */
   _handleNewGame = () => {
     this.actions.initGame();
   }
 
+  /**
+   * Save the current game`s state.
+   */
   _handleSaveGame = () => {
     this.actions.saveGame();
   }

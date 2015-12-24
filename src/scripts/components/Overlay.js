@@ -1,5 +1,12 @@
 import restartImage from "img/restart.svg";
 
+/**
+ * Stateles Overlay component, composed of a simple function.
+ *
+ * @param {Object}
+ *  - `win` - has the player won the game
+ *  - `onRestart` - callback to restart the game
+ */
 export default ({win = false, onRestart}) => {
   const message = win ?
     "You won. Congratulations!" :

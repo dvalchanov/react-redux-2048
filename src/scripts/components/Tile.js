@@ -3,6 +3,10 @@ import classNames from "classnames";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 export default class Tile extends Component {
+
+  /**
+   * Expected properties object types.
+   */
   static propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
@@ -14,10 +18,16 @@ export default class Tile extends Component {
     fromSaved: PropTypes.bool.isRequired
   }
 
+  /**
+   * Expected context object types.
+   */
   static contextTypes = {
     actions: PropTypes.object.isRequired
   }
 
+  /**
+   * Render the provided structure.
+   */
   render() {
     const {x, y, value, id, fromSaved} = this.props;
 

@@ -17,6 +17,9 @@ if (__DEV__) {
 
 /**
  * Render the Debug panel if in development mode.
+ *
+ * @param {Object} store
+ * @returns {Object}
  */
 export function renderDevTools(store) {
   if (__DEV__) {
