@@ -8,8 +8,7 @@ const actions = [
   "INIT_GAME",
   "GAME_OVER",
   "SAVE_GAME",
-  "RESET_RESULT",
-  "SET_MOVED"
+  "RESET_RESULT"
 ];
 
 export default generateActions(actions);
