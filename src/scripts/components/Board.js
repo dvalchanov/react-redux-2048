@@ -114,9 +114,7 @@ export default class Board extends Component {
       }, 50);
     } else {
       if (this.state.moved) {
-        this.queue.shift();
-        this.resolve();
-        this.called = true;
+        this._resolve();
       }
     }
   }
@@ -154,7 +152,7 @@ export default class Board extends Component {
    * Move the tiles and set a new Promise that needs to be completed after the merging.
    * If not completed the next action in the queue won't be executed.
    *
-   * @param {direction}
+   * @param {Number} direction
    * @returns {Promise}
    */
   _moveTiles(direction) {
@@ -163,6 +161,25 @@ export default class Board extends Component {
       this.context.actions.moveTiles(direction);
       this.setState({moved: true});
     });
+  }
+
+  /**
+   * Prepare certain direction to be executed.
+   *
+   * @param {Number} direction
+   */
+  _prepare = (direction) => {
+    this.queue.push(direction);
+    this._execute(true);
+  }
+
+  /**
+   * Resolve the last executed direction.
+   */
+  _resolve = () => {
+    this.queue.shift();
+    this.resolve();
+    this.called = true;
   }
 
   /**
@@ -201,8 +218,7 @@ export default class Board extends Component {
     const direction = DIRECTIONS[e.keyCode];
 
     if (typeof direction !== "undefined") {
-      this.queue.push(direction);
-      this._execute(true);
+      this._prepare(direction);
     }
   }
 
@@ -230,14 +246,13 @@ export default class Board extends Component {
     const dY = this.touch.y - y;
 
     if (Math.abs(dX) > Math.abs(dY)) {
-      if (dX > 0) this.queue.push(LEFT);
-      else this.queue.push(RIGHT);
+      if (dX > 0) this._prepare(LEFT);
+      else this._prepare(RIGHT);
     } else {
-      if (dY > 0) this.queue.push(UP);
-      else this.queue.push(DOWN);
+      if (dY > 0) this._prepare(UP);
+      else this._prepare(DOWN);
     }
 
-    this._execute(true);
     this.touch = initialTouch;
   }
 
@@ -248,15 +263,13 @@ export default class Board extends Component {
    * @param {Object} e
    */
   _handleTransitionEnd = (e) => {
-    // Don't _execute on first transition end but on last!!
-    if (e.propertyName === "transform") return;
+    if (["top", "left"].indexOf(e.propertyName) === -1) return;
+
     if (!this.called) {
       this.context.actions.mergeTiles();
       this.context.actions.newTile();
-      this.called = true;
 
-      this.queue.shift();
-      this.resolve();
+      this._resolve();
     }
   }
 
