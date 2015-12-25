@@ -150,66 +150,6 @@ export default class Board extends Component {
   }
 
   /**
-   * Move the tiles and set a new Promise that needs to be completed after the merging.
-   * If not completed the next action in the queue won't be executed.
-   *
-   * @param {Number} direction
-   * @returns {Promise}
-   */
-  _moveTiles(direction) {
-    return new Promise((resolve) => {
-      this.resolve = resolve;
-      this.context.actions.moveTiles(direction);
-      this.setState({moved: true});
-    });
-  }
-
-  /**
-   * Prepare certain direction to be executed.
-   *
-   * @param {Number} direction
-   */
-  _prepare = (direction) => {
-    this.queue.push(direction);
-    this._execute(true);
-  }
-
-  /**
-   * Resolve the last executed direction.
-   */
-  _resolve = () => {
-    this.queue.shift();
-    this.resolve();
-    this.called = true;
-  }
-
-  /**
-   * Execute the actions in the queue one after another. Change the function after
-   * the first execution, since the logic is changed after that or set the initial
-   * function if there are no more actions to be executed.
-   */
-  _execute = async function initialExecute() {
-    if (this.queue.length <= 1) {
-      await this._moveTiles(this.queue[0]);
-
-      if (this.queue.length) {
-        this._execute();
-      }
-    } else {
-      this._execute = async (initial) => {
-        if (initial) return;
-
-        if (this.queue.length) {
-          await this._moveTiles(this.queue[0]);
-          this._execute();
-        } else {
-          this._execute = initialExecute;
-        }
-      };
-    }
-  }
-
-  /**
    * Check the key code and execute the according action if it's an arrow key,
    * meaning if it is from the given directions.
    *
@@ -271,6 +211,66 @@ export default class Board extends Component {
       this.context.actions.newTile();
 
       this._resolve();
+    }
+  }
+
+  /**
+   * Move the tiles and set a new Promise that needs to be completed after the merging.
+   * If not completed the next action in the queue won't be executed.
+   *
+   * @param {Number} direction
+   * @returns {Promise}
+   */
+  _moveTiles(direction) {
+    return new Promise((resolve) => {
+      this.resolve = resolve;
+      this.context.actions.moveTiles(direction);
+      this.setState({moved: true});
+    });
+  }
+
+  /**
+   * Prepare certain direction to be executed.
+   *
+   * @param {Number} direction
+   */
+  _prepare = (direction) => {
+    this.queue.push(direction);
+    this._execute(true);
+  }
+
+  /**
+   * Resolve the last executed direction.
+   */
+  _resolve = () => {
+    this.queue.shift();
+    this.resolve();
+    this.called = true;
+  }
+
+  /**
+   * Execute the actions in the queue one after another. Change the function after
+   * the first execution, since the logic is changed after that or set the initial
+   * function if there are no more actions to be executed.
+   */
+  _execute = async function initialExecute() {
+    if (this.queue.length <= 1) {
+      await this._moveTiles(this.queue[0]);
+
+      if (this.queue.length) {
+        this._execute();
+      }
+    } else {
+      this._execute = async (initial) => {
+        if (initial) return;
+
+        if (this.queue.length) {
+          await this._moveTiles(this.queue[0]);
+          this._execute();
+        } else {
+          this._execute = initialExecute;
+        }
+      };
     }
   }
 }
