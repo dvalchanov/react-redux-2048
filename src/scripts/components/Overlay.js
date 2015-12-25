@@ -7,7 +7,7 @@ import restartImage from "img/restart.svg";
  *  - `win` - has the player won the game
  *  - `onRestart` - callback to restart the game
  */
-export default ({win = false, onRestart}) => {
+export default ({win = false, onNewGame}) => {
   const message = win ?
     "You won. Congratulations!" :
     "Game over.";
@@ -17,7 +17,7 @@ export default ({win = false, onRestart}) => {
   return (
     <div id="overlay" className={cx}>
       <h2>{message}</h2>
-      <img src={restartImage} className="restart" onClick={onRestart}></img>
+      <img src={restartImage} className="restart" onClick={onNewGame}></img>
     </div>
   );
 };

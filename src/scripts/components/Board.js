@@ -44,7 +44,8 @@ export default class Board extends Component {
     game: PropTypes.instanceOf(Map).isRequired,
     isActual: PropTypes.bool.isRequired,
     win: PropTypes.bool,
-    fromSaved: PropTypes.bool.isRequired
+    fromSaved: PropTypes.bool.isRequired,
+    handleNewGame: PropTypes.func.isRequired
   }
 
   /**
@@ -123,7 +124,7 @@ export default class Board extends Component {
    * Render the provided structure.
    */
   render() {
-    const {game, win, fromSaved} = this.props;
+    const {game, win, fromSaved, handleNewGame} = this.props;
 
     const tiles = game.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
@@ -139,7 +140,7 @@ export default class Board extends Component {
 
     return (
       <wrapper ref="board">
-        {hasEnded && <Overlay win={win} onRestart={this._handleRestart} />}
+        {hasEnded && <Overlay win={win} onNewGame={handleNewGame} />}
         <container ref="tiles" id="tiles">
           {tileViews}
         </container>
@@ -271,13 +272,5 @@ export default class Board extends Component {
 
       this._resolve();
     }
-  }
-
-  /**
-   * Restart the game.
-   * TODO - should be the same as the restart in Game.js
-   */
-  _handleRestart = () => {
-    this.context.actions.initGame();
   }
 }
