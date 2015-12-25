@@ -1,5 +1,8 @@
 import actionTypes from "./actionTypes";
 
+/**
+ * Create a new random tile.
+ */
 export function newTile() {
   return dispatch => {
     dispatch({
@@ -8,6 +11,11 @@ export function newTile() {
   };
 }
 
+/**
+ * Move the tiles in the chose direction.
+ *
+ * @param {Number} direction
+ */
 export function moveTiles(direction) {
   return dispatch => {
     dispatch({
@@ -17,6 +25,9 @@ export function moveTiles(direction) {
   };
 }
 
+/**
+ * Actualize the tiles positions.
+ */
 export function actualize() {
   return dispatch => {
     dispatch({
@@ -25,6 +36,9 @@ export function actualize() {
   };
 }
 
+/**
+ * Merge tiles if more than one in one cell.
+ */
 export function mergeTiles() {
   return dispatch => {
     dispatch({
@@ -33,6 +47,9 @@ export function mergeTiles() {
   };
 }
 
+/**
+ * Initialize a new game.
+ */
 export function initGame() {
   return dispatch => {
     dispatch({
@@ -41,6 +58,9 @@ export function initGame() {
   };
 }
 
+/**
+ * Save the current game.
+ */
 export function saveGame() {
   return dispatch => {
     dispatch({
@@ -49,6 +69,9 @@ export function saveGame() {
   };
 }
 
+/**
+ * Reset the merging tiles result field for the current move.
+ */
 export function resetResult() {
   return dispatch => {
     dispatch({
