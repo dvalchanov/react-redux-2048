@@ -9,9 +9,6 @@ This is an application starter using the following:
 - Webpack
 - HMR
 - ImmutableJS
-- Mocha
-- Chai
-- jsdom
 
 ---
 

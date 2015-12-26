@@ -9,11 +9,5 @@ debug:
 build:
 	npm run build
 
-test:
-	npm run test
-
-watch:
-	npm run test:watch
-
 lint:
 	npm run lint
