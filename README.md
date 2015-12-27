@@ -5,7 +5,7 @@
   * [start](#start)
   * [test](#test)
   * [watch](#watch)
-* [Guide](#guide)
+* [Get Started](#get-started)
 
 
 ## Setup
@@ -42,3 +42,5 @@ Build a production ready version of the code:
 ```
 make build
 ```
+
+## Get started
