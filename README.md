@@ -1,13 +1,10 @@
-# react-redux-starter
+# 2048 - Implemented with React and Redux
 
-**NOTE: Work In Progress**
-
-This is an application starter using the following:
+This is an implementation of the 2048 game, using the following:
 - React
 - Redux
-- Babel
 - Webpack
-- HMR
+- Babel
 - ImmutableJS
 
 ---
@@ -17,7 +14,7 @@ This is an application starter using the following:
   * [start](#start)
   * [test](#test)
   * [watch](#watch)
-* [Warnings](#warnings)
+* [Guide](#guide)
 
 
 ## Setup
@@ -32,26 +29,25 @@ npm install
 ## Usage
 
 ### `start`
-Start the server:
+Start the development server with hot reload:
 ```
 make start
 ```
 
-### `test`
-Run the tests:
+### `debug`
+Start the development server in DEBUG mode, with the React dev tools enabled:
 ```
-make test
-```
-
-### `watch`
-Run and watch the tests:
-```
-make watch
+make debug
 ```
 
+### `lint`
+Lint the code to check for any errors:
+```
+make lint
+```
 
-## Warnings
-
-- Soft warning when using LogMonitor
-- Make sure that you have node 4.x.x version or otherwise change jsdom version to
-3.x.x
+### `build`
+Build a production ready version of the code:
+```
+make build
+```

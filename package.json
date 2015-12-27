@@ -7,7 +7,6 @@
     "postinstall": "webpack --config webpack.config.production.js --colors --bail",
     "start": "node server.js",
     "start:debug": "DEBUG=true npm start",
-    "test:lint": "eslint test",
     "lint": "eslint src/scripts",
     "build": "rm build/*; NODE_ENV=production webpack --config webpack.config.production.js --colors --bail"
   },
