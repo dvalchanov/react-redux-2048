@@ -3,8 +3,9 @@
 * [Setup](#setup)
 * [Usage](#usage)
   * [start](#start)
-  * [test](#test)
-  * [watch](#watch)
+  * [debug](#debug)
+  * [lint](#lint)
+  * [build](#build)
 * [Get Started](#get-started)
 
 
