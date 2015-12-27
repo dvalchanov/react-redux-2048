@@ -12,8 +12,8 @@
 ## Setup
 
 ```
-git clone git@github.com:CeRRuTiTo/react-redux-starter.git
-cd react-redux-starter
+git clone git@github.com:CeRRuTiTo/react-redux-2048.git
+cd react-redux-2048
 npm install
 ```
 
