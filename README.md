@@ -45,3 +45,12 @@ make build
 ```
 
 ## Get started
+
+Building an application with React and Redux and all the surrounding ecosystem
+can be touch, not because it's complex but because there's not really a right
+way to do it yet.
+
+This is an opinionated guide on building the 2048 game with these technologies.
+
+
+WIP
