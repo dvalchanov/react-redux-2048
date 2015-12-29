@@ -64,8 +64,6 @@ export default class Game extends Component {
    */
   render() {
     const {score, result} = this.props;
-    const children = this.props.children || [];
-    children.push(<Board key="1" handleNewGame={this._handleNewGame} />);
 
     let resultView;
     if (result) resultView = <Result result={result}/>;
@@ -78,7 +76,7 @@ export default class Game extends Component {
         </div>
         <button onClick={this._handleNewGame}>New Game</button>
         <button onClick={this._handleSaveGame}>Save Game</button>
-        {children}
+        <Board key="1" handleNewGame={this._handleNewGame} />
       </main>
     );
   }
