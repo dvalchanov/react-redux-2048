@@ -8,7 +8,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
  * Define global application variables.
  */
 var definePlugin = new webpack.DefinePlugin({
-  __DEV__: JSON.stringify("false"),
+  __DEV__: JSON.stringify(false),
   "process.env": {
     NODE_ENV: JSON.stringify("production")
   }

@@ -5,7 +5,7 @@ var webpack = require("webpack");
  * Define global application variables.
  */
 var definePlugin = new webpack.DefinePlugin({
-  __DEV__: JSON.stringify(JSON.parse(process.env.DEBUG || "false")),
+  __DEV__: JSON.stringify(JSON.parse(process.env.DEBUG || false)),
   "process.env": {
     NODE_ENV: JSON.stringify("development")
   }
