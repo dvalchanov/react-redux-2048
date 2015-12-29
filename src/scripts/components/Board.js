@@ -91,6 +91,7 @@ export default class Board extends Component {
     document.addEventListener("keyup", this._handleKeyUp, false);
     tiles.addEventListener("transitionend", this._handleTransitionEnd, false);
     board.addEventListener("touchstart", this._handleTouchStart, false);
+    board.addEventListener("touchmove", this._disableScroll, false);
     board.addEventListener("touchend", this._handleTouchEnd, false);
 
     if (!this.props.fromSaved) {
@@ -164,6 +165,15 @@ export default class Board extends Component {
   }
 
   /**
+   * Disable the scrolling if the finger is over the board.
+   *
+   * @param {Object} e
+   */
+  _disableScroll = (e) => {
+    e.preventDefault();
+  }
+
+  /**
    * Save the initial touch event.
    *
    * @param {Object} e
@@ -181,7 +191,7 @@ export default class Board extends Component {
   _handleTouchEnd = (e) => {
     if (!this.touch.x || !this.touch.y) return;
 
-    const {x, y} = this.getTouches(e.changedTouches);
+    const {x, y} = getTouches(e.changedTouches);
 
     const dX = this.touch.x - x;
     const dY = this.touch.y - y;
@@ -195,6 +205,7 @@ export default class Board extends Component {
     }
 
     this.touch = initialTouch;
+    this.refs.board.removeEventListener("touchmove");
   }
 
   /**
