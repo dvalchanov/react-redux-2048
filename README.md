@@ -8,11 +8,12 @@
   * [build](#build)
 * [Get Started](#get-started)
 
+If you want to play with it, you can check the [DEMO](http://dvalchanov.github.io/react-redux-2048/)
 
 ## Setup
 
 ```
-git clone git@github.com:CeRRuTiTo/react-redux-2048.git
+git clone git@github.com:dvalchanov/react-redux-2048.git
 cd react-redux-2048
 npm install
 ```
