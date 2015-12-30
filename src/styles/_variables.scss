@@ -22,6 +22,6 @@ $cell-count: 4;
 $padding-count: 5;
 $ratio: 7.5;
 
-$board-size: 400;
+$board-size: 300;
 $cell-size: $board-size / ($cell-count + ($padding-count / $ratio));
 $cell-padding: $cell-size / $ratio;
