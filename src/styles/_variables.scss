@@ -18,6 +18,10 @@ $tile-512: #FF7759;
 $tile-1024: #F65E3B;
 $tile-2048: #BC2C1A;
 
-$cell-size: 75;
-$cell-padding: 10;
-$board-size: (4 * $cell-size) + (5 * $cell-padding);
+$cell-count: 4;
+$padding-count: 5;
+$ratio: 7.5;
+
+$board-size: 400;
+$cell-size: $board-size / ($cell-count + ($padding-count / $ratio));
+$cell-padding: $cell-size / $ratio;
