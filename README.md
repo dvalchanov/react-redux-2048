@@ -1,7 +1,5 @@
 # 2048 - Implemented with React and Redux
 
-Happy New Year!!!
-
 * [Setup](#setup)
 * [Usage](#usage)
   * [start](#start)
