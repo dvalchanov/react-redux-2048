@@ -6,7 +6,6 @@
   * [debug](#debug)
   * [lint](#lint)
   * [build](#build)
-* [Get Started](#get-started)
 
 If you want to play with it, you can check the [DEMO](http://dvalchanov.github.io/react-redux-2048/)
 
@@ -44,14 +43,3 @@ Build a production ready version of the code:
 ```
 make build
 ```
-
-## Get started
-
-Building an application with React and Redux and all the surrounding ecosystem
-can be touch, not because it's complex but because there's not really a right
-way to do it yet.
-
-This is an opinionated guide on building the 2048 game with these technologies.
-
-
-WIP
