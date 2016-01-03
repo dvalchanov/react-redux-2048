@@ -141,7 +141,7 @@ export default class Board extends Component {
 
     return (
       <wrapper ref="board">
-        {hasEnded && <Overlay win={win} onNewGame={handleNewGame} />}
+        {hasEnded && <Overlay onNewGame={handleNewGame} win={win} />}
         <container ref="tiles" id="tiles">
           {tileViews}
         </container>

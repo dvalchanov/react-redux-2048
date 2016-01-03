@@ -7,7 +7,7 @@ import restartImage from "img/restart.svg";
  *  - `win` - has the player won the game
  *  - `onRestart` - callback to restart the game
  */
-export default ({win = false, onNewGame}) => {
+export default ({onNewGame, win = false}) => {
   const message = win ?
     "You won. Congratulations!" :
     "Game over.";
