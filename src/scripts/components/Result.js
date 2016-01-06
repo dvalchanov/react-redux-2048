@@ -2,6 +2,7 @@ import {Component, PropTypes} from "react";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 export default class Result extends Component {
+
   /**
    * Expected properties object types.
    */

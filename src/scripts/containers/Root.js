@@ -7,10 +7,17 @@ import {createStore, renderDevTools} from "js/utils/devTools";
 import reducers from "js/reducers";
 import Game from "./Game";
 
+/**
+ * Compose a new store from the passed reducers and apply a thunk middleware.
+ */
 const store = compose(
   applyMiddleware(thunk)
 )(createStore)(reducers);
 
+/**
+ * Default component, that sets and connects the store to its children.
+ * Render Development Tools if in DEBUG mode.
+ */
 export default class Root extends Component {
   render() {
     return (

@@ -1,5 +1,8 @@
 import {generateActions} from "js/utils/actions";
 
+/**
+ * Actions to be generated.
+ */
 const actions = [
   "NEW_TILE",
   "MOVE_TILES",
