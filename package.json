@@ -4,7 +4,6 @@
   "description": "Starter Kit for React + Redux application with Webpack",
   "main": "src/main.js",
   "scripts": {
-    "postinstall": "webpack --config webpack.config.production.js --colors --bail",
     "start": "node server.js",
     "start:debug": "DEBUG=true npm start",
     "lint": "eslint src/scripts",
@@ -26,6 +25,7 @@
     "classnames": "^2.2.1",
     "history": "^1.13.1",
     "immutable": "^3.7.5",
+    "luckio": "^1.0.1",
     "react": "^0.14.3",
     "react-addons-css-transition-group": "^0.14.3",
     "react-dom": "^0.14.3",

@@ -2,7 +2,7 @@ import {Map, List, Range, fromJS} from "immutable";
 import store from "store2";
 import _ from "lodash";
 import actionTypes from "js/actions/actionTypes";
-import {isLucky} from "js/utils/math";
+import luckio from "luckio";
 import {getCurrent} from "js/utils/vectors";
 
 import {
@@ -24,6 +24,11 @@ import {
  * ID counter.
  */
 let id = 0;
+
+/**
+ * Set a lucky function with 1% chance.
+ */
+const isLucky = luckio(1);
 
 /**
  * Default starting state.
