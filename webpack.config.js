@@ -52,7 +52,7 @@ var config = {
    */
   commonPlugins: [
     new HtmlWebpackPlugin({
-      title: "React + Redux Starter",
+      title: "2048 - implemented with React and Redux",
       template: "src/index.html"
     }),
     new webpack.ProvidePlugin({
