@@ -50,10 +50,11 @@ export function mergeTiles() {
 /**
  * Initialize a new game.
  */
-export function initGame() {
+export function initGame(size) {
   return dispatch => {
     dispatch({
-      type: actionTypes.INIT_GAME
+      type: actionTypes.INIT_GAME,
+      size
     });
   };
 }

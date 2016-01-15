@@ -4,6 +4,14 @@ import {bindActionCreators} from "redux";
 import {Board, Result} from "js/components";
 import * as Actions from "js/actions/actions";
 
+// TODO - Use instead of css
+//size: 300,
+//ratio: 15 / 2,
+//count: 5,
+//padding: board.count + 1,
+//cellSize: board.size / (board.count + (board.padding / board.ratio)),
+//cellPadding: board.cell / board.ratio
+
 /**
  * How to:
  *
@@ -60,6 +68,13 @@ export default class Game extends Component {
   }
 
   /**
+   * Component's state.
+   */
+  state = {
+    size: 5
+  };
+
+  /**
    * Render the provided structure.
    */
   render() {
@@ -76,7 +91,12 @@ export default class Game extends Component {
         </div>
         <button onClick={this._handleNewGame}>New Game</button>
         <button onClick={this._handleSaveGame}>Save Game</button>
-        <Board key="1" handleNewGame={this._handleNewGame} />
+        <Board key="1" size={this.state.size} handleNewGame={this._handleNewGame} />
+        <div id="board-size">
+          <span className="btn minus" onClick={this._handleDecrease} />
+          <span className="size">{this.state.size}</span>
+          <span className="btn plus" onClick={this._handleIncrease} />
+        </div>
       </main>
     );
   }
@@ -93,5 +113,19 @@ export default class Game extends Component {
    */
   _handleSaveGame = () => {
     this.actions.saveGame();
+  }
+
+  /**
+   * Increase the size of the board.
+   */
+  _handleDecrease = () => {
+    this.setState({size: this.state.size - 1});
+  }
+
+  /**
+   * Decrease the size of the board.
+   */
+  _handleIncrease = () => {
+    this.setState({size: this.state.size + 1});
   }
 }

@@ -24,8 +24,8 @@ body {
  * Global (Standard usage)
  */
 :global {
-  @for $row from 0 through 3 {
-    @for $column from 0 through 3 {
+  @for $row from 0 through $cell-count {
+    @for $column from 0 through $cell-count {
       .cell-#{$row}-#{$column} {
         top: px(#{$cell-padding + (($cell-size + $cell-padding) * $row)}) !important;
         left: px(#{$cell-padding + (($cell-size + $cell-padding) * $column)}) !important;
@@ -119,6 +119,52 @@ body {
 
     &:hover { background: $tile-1024; }
   }
+
+  #board-size {
+    margin: 0 auto;
+    margin-top: 20px;
+    height: 40px;
+    width: 120px;
+
+    span {
+      float: left;
+    }
+
+    span.size {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      font-family: sans-serif;
+      font-size: 20px;
+    }
+
+    span.btn {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      position: relative;
+
+      &:after {
+        @include center();
+
+        content: "";
+        width: 24px;
+        height: 24px;
+      }
+
+      &.minus:after {
+        background: url("../images/minus.svg");
+        background-size: 24px 24px;
+      }
+
+      &.plus:after {
+        background: url("../images/plus.svg");
+        background-size: 24px 24px;
+      }
+    }
+  }
+
 
   wrapper {
     margin: 0 auto;

@@ -16,7 +16,6 @@ import {
   INITIAL,
   STARTING_TILES,
   DIRECTIONS,
-  SIZE,
   WIN_SCORE, START_SCORE
 } from "js/constants";
 
@@ -35,9 +34,10 @@ const isLucky = luckio(1);
  */
 const defaultState = Map({
   win: null,
+  size: 4,
   score: START_SCORE,
-  cells: generateCells(SIZE, SIZE),
-  grid: generateGrid(SIZE, SIZE),
+  cells: List(),
+  grid: List(),
   isActual: true,
   fromSaved: false
 });
@@ -132,7 +132,7 @@ function findAvailableCell(state, tile, direction) {
   let available;
   const {axis, value} = getCurrent(direction);
   const from = tile.get(axis);
-  const to = value < 0 ? (SIZE - 1) : 0;
+  const to = value < 0 ? (state.get("size") - 1) : 0;
 
   Range(to, from).forEach(index => {
     const path = (
@@ -326,6 +326,9 @@ export default (state = initialState, action) => {
     case actionTypes.INIT_GAME:
       store(false);
       state = defaultState;
+      state.set("size", action.size);
+      state.set("cells", generateCells(action.size, action.size));
+      state.set("grid", generateGrid(action.size, action.size));
       _.times(STARTING_TILES, () => state = newTile(state));
       return state;
 

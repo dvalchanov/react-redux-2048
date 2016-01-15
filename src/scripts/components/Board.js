@@ -2,7 +2,7 @@ import {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {Map} from "immutable";
 import {Grid, Tile, Overlay} from "./";
-import {DIRECTIONS, UP, LEFT, DOWN, RIGHT, SIZE} from "js/constants";
+import {DIRECTIONS, UP, LEFT, DOWN, RIGHT} from "js/constants";
 
 /**
  * Default touch values.
@@ -45,7 +45,8 @@ export default class Board extends Component {
     isActual: PropTypes.bool.isRequired,
     win: PropTypes.bool,
     fromSaved: PropTypes.bool.isRequired,
-    handleNewGame: PropTypes.func.isRequired
+    handleNewGame: PropTypes.func.isRequired,
+    size: PropTypes.number.isRequired
   }
 
   /**
@@ -125,7 +126,7 @@ export default class Board extends Component {
    * Render the provided structure.
    */
   render() {
-    const {game, win, fromSaved, handleNewGame} = this.props;
+    const {game, win, fromSaved, handleNewGame, size} = this.props;
 
     const tiles = game.get("grid").flatten(2);
     const tileViews = tiles.map(tile => {
@@ -145,7 +146,7 @@ export default class Board extends Component {
         <container ref="tiles" id="tiles">
           {tileViews}
         </container>
-        <Grid size={SIZE} />
+        <Grid size={size} />
       </wrapper>
     );
   }

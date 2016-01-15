@@ -17,8 +17,8 @@ $tile-512: #FF7759;
 $tile-1024: #F65E3B;
 $tile-2048: #BC2C1A;
 
-$cell-count: 4;
-$padding-count: 5;
+$cell-count: 5;
+$padding-count: $cell-count + 1;
 $ratio: 7.5;
 
 $board-size: 300;
