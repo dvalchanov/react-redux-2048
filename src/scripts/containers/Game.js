@@ -4,6 +4,8 @@ import {bindActionCreators} from "redux";
 import {Board, Result} from "js/components";
 import * as Actions from "js/actions/actions";
 
+// TODO - Implement variable grid size
+
 /**
  * How to:
  *
