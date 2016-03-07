@@ -8,13 +8,11 @@ import {getCurrent} from "js/utils/vectors";
 import {
   generateCells,
   generateGrid,
-  forEachCell,
-  randomCell
+  forEachCell
 } from "js/helpers";
 
 import {
   INITIAL,
-  STARTING_TILES,
   DIRECTIONS,
   SIZE,
   WIN_SCORE, START_SCORE
@@ -87,10 +85,9 @@ function addTile(state, tile, value) {
  * @param {Object} state
  * @returns {Object}
  */
-function newTile(state) {
+export function newTile(state, cell) {
   if (!state.get("cells").size) return state;
 
-  const cell = randomCell(state.get("cells"));
   const tile = state.getIn(["cells", cell]);
   const x = state.get("grid").flatten(2).find(t => t.get("value") === "x");
 
@@ -312,7 +309,7 @@ function mergeTiles(state) {
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.NEW_TILE:
-      return newTile(state);
+      return newTile(state, action.cell);
 
     case actionTypes.MOVE_TILES:
       return moveInDirection(state, action.direction);
@@ -326,7 +323,7 @@ export default (state = initialState, action) => {
     case actionTypes.INIT_GAME:
       store(false);
       state = defaultState;
-      _.times(STARTING_TILES, () => state = newTile(state));
+      action.cells.map(cell => state = newTile(state, cell));
       return state;
 
     case actionTypes.GAME_OVER:

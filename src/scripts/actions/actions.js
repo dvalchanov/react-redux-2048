@@ -1,12 +1,17 @@
 import actionTypes from "./actionTypes";
+import {randomCell} from "js/helpers";
+import {STARTING_TILES} from "js/constants";
+import {newTile as newTileReducer} from "js/reducers/Game";
 
 /**
  * Create a new random tile.
  */
 export function newTile() {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const state = getState().game;
     dispatch({
-      type: actionTypes.NEW_TILE
+      type: actionTypes.NEW_TILE,
+      cell: randomCell(state.get("cells"))
     });
   };
 }
@@ -51,9 +56,15 @@ export function mergeTiles() {
  * Initialize a new game.
  */
 export function initGame() {
-  return dispatch => {
+  return (dispatch, getState) => {
+    let state = getState().game;
     dispatch({
-      type: actionTypes.INIT_GAME
+      type: actionTypes.INIT_GAME,
+      cells: _.times(STARTING_TILES, () => {
+        const cell = randomCell(state.get("cells"));
+        state = newTileReducer(state, cell);
+        return cell;
+      })
     });
   };
 }
